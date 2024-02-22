@@ -1,6 +1,6 @@
 {
   "name": "@zimjs/game",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "Game module for ZIM JavaScript Canvas Framework",
   "main": "index.js",
   "types": "index.d.ts",
