@@ -44,7 +44,7 @@ import { Board, Scorer, Timer, Dialog } from "@zimjs/game"
 ```
 
 <h2>Examples</h2>
-There are hundreds of examples many including games in <a href=https://zimjs.com/examples.html>ZIM Examples</a>.  The <a href=https://zimjs.com/games.html>ZIM&nbsp;Games</a> page feature a bunch for instance:
+<p>There are hundreds of examples many including games in <a href=https://zimjs.com/examples.html>ZIM Examples</a>.  The <a href=https://zimjs.com/games.html>ZIM&nbsp;Games</a> page feature a bunch for instance:</p>
 
 <a href=https://zimjs.com/robots/>![oddrobots2](https://github.com/danzen/zim-game/assets/380281/ee323957-f545-44de-8242-a4e7a848ae3c)</a>
 
