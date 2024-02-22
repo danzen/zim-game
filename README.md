@@ -25,7 +25,7 @@ ZIM already comes with many features for games as described in the <a href=https
 
 ![uiux_2](https://github.com/danzen/zim-game/assets/380281/1454e2f6-9b94-4109-b275-1bed498a36c7)
 
-Plus all the <a href=https://zimjs.com/about.htm>conveniences, components and controls</a> of general Interactive Media.
+Plus all the <a href=https://zimjs.com/about.html>conveniences, components and controls</a> of general Interactive Media.
 
 <h2>CDN</h2>
 <p>Usually we use ES Modules to bring in ZIM and if we want Game then we the code below - see the starting template at the top of the https://zimjs.com/code page.  If physics is needed, just import zim_physics and it will include the game module by default.  (Note, the NPM Physics does not).
