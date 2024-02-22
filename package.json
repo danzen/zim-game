@@ -1,0 +1,32 @@
+{
+  "name": "@zimjs/game",
+  "version": "2.7.0",
+  "description": "Game module for ZIM JavaScript Canvas Framework",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danzen/zim-game.git"
+  },
+  "keywords": [
+    "canvas",
+    "javascript",
+    "game",
+    "zim",
+    "zimjs",
+    "leaderboard",
+    "isometric",
+    "scorer",
+    "timer",
+    "dialog"
+  ],
+  "author": "Dr Abstract",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "zimjs": "^16.0.4"
+  }
+}
