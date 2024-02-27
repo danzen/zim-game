@@ -30,6 +30,7 @@ import zim from "zimjs";
 // note - removed the ES5 module pattern as we are getting zim from import
 // ~~~~~~~~~~~~~~~~~~~~~~~~
 
+var WW = window||{};
 
 zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, titleColor, colors, total, scoreWidth, scorePlaces, scoreZeros, spacing, arrows, borderColor, borderWidth, shadowColor, shadowBlur, reverse, allowZero, font, fontSize, nameShift, scoreShift, rankShift) {
     var sig = "data, title, width, height, corner, backgroundColor, titleColor, colors, total, scoreWidth, scorePlaces, scoreZeros, spacing, arrows, borderColor, borderWidth, shadowColor, shadowBlur, reverse, allowZero, font, fontSize, nameShift, scoreShift, rankShift";
@@ -69,7 +70,7 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
     backing.off("click", backingEvent);
     this.addChild(backing);
     this.setBounds(0,0,width,height);
-    this.backdrop = new zim.Rectangle(2000, 1000, "rgba(0,0,0,.01)").center(this, 0);
+    this.backdrop = new Rectangle(2000, 1000, "rgba(0,0,0,.01)").center(this, 0);
     if (typeof frame == "undefined" && typeof zimDefaultFrame != "undefined") {var frame = zimDefaultFrame;}
     var stage = frame.stage;
     this.backdrop.on("mousedown", function() {
@@ -152,7 +153,7 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
 
     var keydownEvent;
 
-    function makeGrid() {
+    function makeGrid() {			
         scaleStart = that.scaleX;
         that.sca(1);
         that.filled = false;
@@ -200,35 +201,41 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
             for (var i=0; i<3; i++) {
                 stepper = new zim.Stepper({
                     list:winCheck?"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-*_".split(""):p[i],
-                    width:100,
+                    width:70,
                     continuous:true,
-                    label:new zim.Label({text:"", font:font, color:j==that.winner?c.currentNameColor:c.nameColor, size:fontSize+4, align:"center", shiftV:-6+nameShift}),
+                    label:new zim.Label({text:"", font:font, color:j==that.winner?c.currentNameColor:c.nameColor, size:fontSize, align:"center", shiftV:-5-nameShift}),
                     backgroundColor:winCheck?c.currentNameBackgroundColor:c.nameBackgroundColor,
                     vertical:false,
                     arrows:false,
                     arrows2:(winCheck&&arrows),
                     corner:0,
                     shadowBlur:0
-                });
+                }).sca(100/60);
                 if (winCheck) {
                     backing.mouseEnabled = true;
                     backing.on("click", backingEvent);
                     if (frame.tabOrder) frame.tabOrder.push(stepper);
                     winSteppers.push(stepper);
                     stepper.currentValue = "_";
-                    stepper.on("change", function() {
-                        var waitCheck = zim.loop(winSteppers, function(s) {
-                            if (s.currentValue == "_") return true;
-                        });
-                        if (!waitCheck) {
+                    stepper.on("change", function(e) {	
+                        if (e.target.text != "_") {
+                            e.target.label.y = 19-nameShift;
+                            e.target.stage.update();
+                        }						
+                        var done = zim.loop(winSteppers, function(s) {
+                            if (s.currentValue == "_") return false;
+                        });		
+                        if (done) {
                             that.filled = true;
                             winScore.text = "";
-                            button.addTo(winRow);
+                            button.loc(winScore.backing).addTo(winRow);
                             if (that.stage) that.stage.update();
                         }
                         that.dispatchEvent("change");
                     });
                     if (i==0) stepper.keyFocus = true;
+                } else {
+                    stepper.label.y = 19-nameShift;
                 }
                 // stepper.label.reg(0,-2-nameShift)
                 // stepper.label.mov(0,2+nameShift)
@@ -272,8 +279,8 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
                     corner:0,
                     shadowBlur:0
                 });
-                button.x = scoreText.x-60;
-                button.y = scoreText.y;
+                // button.x = scoreText.x-60;
+                // button.y = scoreText.y;
                 if (frame.tabOrder) frame.tabOrder.push(button);
                 button.on("mousedown", that.submitScore);
 
@@ -319,22 +326,29 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
     }
 
     this.score = function(score) {
-        if (!zot(that.pendingIndex)) that.cancel();
+
+        if (!Array.isArray(data)) {
+            timeout(.1, function(){that.score(score)});
+            return;
+        }
+        
+        if (!zot(that.pendingIndex)) that.cancel();			
+
         var position = zim.loop(data, function(s, i) {
             if ((!reverse && s.score <= score) || (reverse && s.score >= score)) {
                 data.splice(i, 0, {player:"", score:score});
                 return i;
             }
         });
-        if (zot(position) && (allowZero || score > 0) && (data.length == 0 || data.length < total)) {
+        if (position===true && (allowZero || score > 0) && (data.length == 0 || data.length < total)) {
              data.push({player:"", score:score});
              position = data.length-1;
         }
-        if (!zot(position)) {
+        if (position!==true) {
             that.pendingIndex = position;
             that.redraw(null, position);
         }
-        return position;
+        return position!==true?position:null;
     }
 
     this.save = function() {
@@ -798,7 +812,7 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
         if (!that.arrows) return;
         if (that.info.length > rows || that.info[0].length > cols) {
             if (!that.arrowUp) {
-                that.arrowUp = new zim.Triangle({color:arrowColor}).sca(.4).center(holder)
+                that.arrowUp = new Triangle({color:arrowColor}).sca(.4).center(holder)
                 if (isometric) {
                     that.arrowUp
                         .rot(45)
@@ -807,7 +821,7 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
                     that.arrowUp
                         .mov(tiles.width/2+40, -30);
                 }
-                that.arrowDown = new zim.Triangle({color:arrowColor}).sca(.4).center(holder)
+                that.arrowDown = new Triangle({color:arrowColor}).sca(.4).center(holder)
                 if (isometric) {
                     that.arrowDown
                         .rot(+45-180)
@@ -832,7 +846,7 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
         });
         if (colArrows == "yes") {
             if (!that.arrowLeft) {
-                that.arrowLeft = new zim.Triangle({color:arrowColor}).sca(.4).cur().center(holder);
+                that.arrowLeft = new Triangle({color:arrowColor}).sca(.4).cur().center(holder);
                 if (isometric) {
                     that.arrowLeft
                         .rot(+45-180+90)
@@ -842,7 +856,7 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
                         .rot(-180+90)
                         .mov(-60, tiles.width/2+40);
                 }
-                that.arrowRight = new zim.Triangle({color:arrowColor}).sca(.4).center(holder);
+                that.arrowRight = new Triangle({color:arrowColor}).sca(.4).center(holder);
                 that.arrowRight.n = "b"
                 if (isometric) {
                     that.arrowRight
@@ -992,7 +1006,7 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
     }
     tiles.loop(function(t) {
         if (indicatorType == "circle") {
-            t.indicator = new zim.Circle(zik(indicatorSize), zik(indicatorColor), zik(indicatorBorderColor), indicatorBorderWidth).center(t).alp(0);
+            t.indicator = new Circle(zik(indicatorSize), zik(indicatorColor), zik(indicatorBorderColor), indicatorBorderWidth).center(t).alp(0);
         } else {
             var size = zik(indicatorSize);
             t.indicator = new zim.Rectangle(size, size, zik(indicatorColor), zik(indicatorBorderColor), indicatorBorderWidth).centerReg(t).alp(0);
@@ -1186,16 +1200,16 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
         if (!zot(filter.item) || !zot(filter.notItem)) {
             var itemList = that.getItems(i,j);
             if (!zot(filter.item)) {
-                var match = zim.loop(itemList, function (it) {
+                var noMatch = zim.loop(itemList, function (it) {
                     if (filter.item.indexOf(it) != -1) return true;
                 });
-                if (!match) return false;
+                if (noMatch) return false;
             }
             if (!zot(filter.notItem)) {
-                var match = zim.loop(itemList, function (it) {
+                var noMatch = zim.loop(itemList, function (it) {
                     if (filter.notItem.indexOf(it) != -1) return true;
                 });
-                if (match) return false;
+                if (!noMatch) return false;
             }
         }
         if (!zot(filter.col) && filter.col.indexOf(i-startCol) == -1) return false;
@@ -1230,7 +1244,7 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
             piecesArray.push(piece);
         })
         piecesArray.sort(function(a,b) {return a.y - b.y;});
-        zim.loop(piecesArray, function(piece) {
+        loop(piecesArray, function(piece) {
             piece.addTo(that.pieces);
         });
         return that;
@@ -1670,7 +1684,7 @@ zim.Timer = function(time, step, colon, down, isometric, startPaused, size, font
     if (zot(borderWidth)) borderWidth = null;
     if (borderColor < 0 || borderWidth < 0) borderColor = borderWidth = null;
     else if (borderColor!=null && borderWidth==null) borderWidth = 1;
-    this.zimLabel_constructor(colon?zim.decimals(time/60,2,2,1,null,true):time, size, font, color, null, null, null, align, valign, null, null, bold, italic, variant, new zim.Rectangle(width, height, backgroundColor, borderColor, borderWidth).centerReg({add:false}));
+    this.super_constructor(colon?zim.decimals(time/60,2,2,1,null,true):time, size, font, color, null, null, null, align, valign, null, null, bold, italic, variant, new zim.Rectangle(width, height, backgroundColor, borderColor, borderWidth).centerReg({add:false}));
     this.type = "Timer";
     var that = this;
     that.totalTime = time;
@@ -1899,7 +1913,7 @@ zim.Dialog = function(width, height, words, dialogType, tailType, fill, size, fo
     }
     function makeArrows() {
         if (arrows && that.words.length > 1 && !that.arrows) {
-            that.arrows = new zim.Container(width, height).centerReg(that);
+            that.arrows = new Container(width, height).centerReg(that);
             that.arrowNext = new zim.Arrow(borderWidth>0?borderColor:backgroundColor, borderWidth>0?borderColor.lighten(.2):backgroundColor.lighten(.2)).sca(.8).pos(arrowsInside?25:-40,(dialogType=="oval"||dialogType=="poly")?0:20,RIGHT,(dialogType=="oval"||dialogType=="poly")?CENTER:arrowsFlip?TOP:BOTTOM,that.arrows).expand();
             that.arrowPrev = new zim.Arrow(borderWidth>0?borderColor:backgroundColor, borderWidth>0?borderColor.lighten(.2):backgroundColor.lighten(.2)).rot(180).sca(.8).pos(arrowsInside?25:-40,(dialogType=="oval"||dialogType=="poly")?0:20,LEFT,(dialogType=="oval"||dialogType=="poly")?CENTER:arrowsFlip?TOP:BOTTOM,that.arrows).expand();
             setArrows();
@@ -2119,7 +2133,6 @@ zim.Dialog = function(width, height, words, dialogType, tailType, fill, size, fo
 zim.extend(zim.Dialog, zim.Container, ["clone","dispose"], "zimContainer", false);
 
 
-var WW = window||{};
 if (!WW.zns) {
     WW.LeaderBoard = zim.LeaderBoard;
     WW.Meter = zim.Meter;
