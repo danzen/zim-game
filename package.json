@@ -27,7 +27,7 @@
     "license": "MIT",
     "devDependencies": {
         "typescript": "^5.3.3",
-        "zimjs": "^16.0.4"
+        "zimjs": "^16.1.9"
     },
     "peerDependencies": {
         "zimjs": "^16.1.9"
