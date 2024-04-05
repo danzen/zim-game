@@ -1684,7 +1684,7 @@ zim.Timer = function(time, step, colon, down, isometric, startPaused, size, font
     if (zot(borderWidth)) borderWidth = null;
     if (borderColor < 0 || borderWidth < 0) borderColor = borderWidth = null;
     else if (borderColor!=null && borderWidth==null) borderWidth = 1;
-    this.super_constructor(colon?zim.decimals(time/60,2,2,1,null,true):time, size, font, color, null, null, null, align, valign, null, null, bold, italic, variant, new zim.Rectangle(width, height, backgroundColor, borderColor, borderWidth).centerReg({add:false}));
+    this.zimLabel_constructor(colon?zim.decimals(time/60,2,2,1,null,true):time, size, font, color, null, null, null, align, valign, null, null, bold, italic, variant, new zim.Rectangle(width, height, backgroundColor, borderColor, borderWidth).centerReg({add:false}));
     this.type = "Timer";
     var that = this;
     that.totalTime = time;
