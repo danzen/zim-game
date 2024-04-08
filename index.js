@@ -176,6 +176,7 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
         backing.off("click", backingEvent);
         for (var j=0; j<total; j++) {
             winCheck = j==that.winner;
+            var p, s;
             if (data[j]) {
                 p = data[j].player;
                 s = data[j].score;
