@@ -335,12 +335,18 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
         
         if (!zot(that.pendingIndex)) that.cancel();			
 
-        var position = zim.loop(data, function(s, i) {
-            if ((!reverse && s.score <= score) || (reverse && s.score >= score)) {
-                data.splice(i, 0, {player:"", score:score});
-                return i;
-            }
-        });
+        var position;
+        if (data.length == 0) {
+            position = 0;
+            data.push({player: "", score: score});
+        } else {
+			position = zim.loop(data, function(s, i) {
+                if ((!reverse && s.score <= score) || (reverse && s.score >= score)) {
+                    data.splice(i, 0, {player:"", score:score});
+                    return i;
+                }
+            });
+        }
         if (position===true && (allowZero || score > 0) && (data.length == 0 || data.length < total)) {
              data.push({player:"", score:score});
              position = data.length-1;
