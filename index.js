@@ -1169,34 +1169,34 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
         // gets random visible tile
         var tile;
         var count = 0;
-        while(!tile && count<10000) {
-            var i = zim.rand(0,cols-1)+startCol;
-            var j = zim.rand(0,rows-1)+startRow;
-            if (filter && includeTest(i,j,filter)) tile = that.getTile(i-startCol,j-startRow);
+        while (!tile && count < 10000) {
+            var i = zim.rand(0, cols - 1) + startCol;
+            var j = zim.rand(0, rows - 1) + startRow;
+            if (filter && includeTest(i, j, filter)) tile = that.getTile(i - startCol, j - startRow);
             count++;
         }
         return tile;
-    }
+    };
 
     function normalizeFilter(filter) {
         if (filter.constructor != {}.constructor) {
             // assume filtering by data
-            filter = {data:!Array.isArray(filter)?[filter]:filter};
+            filter = {data: !Array.isArray(filter) ? [filter] : filter};
             return filter;
         }
         var types = ["data", "notData", "color", "notColor", "icon", "notIcon", "item", "notItem", "col", "notCol", "row", "notRow"];
         var wrong = ["datas", "notDatas", "colors", "notColors", "icons", "notIcons", "items", "notItems", "cols", "notCols", "rows", "notRows"];
-        zim.loop(wrong, function (w, i) {
+        zim.loop(wrong, function(w, i) {
             if (filter[w]) filter[types[i]] = filter[w];
             delete filter[w];
         });
-        zim.loop(types, function (type) {
+        zim.loop(types, function(type) {
             if (!zot(filter[type]) && !Array.isArray(filter[type])) filter[type] = [filter[type]];
         });
         return filter;
     }
 
-    function includeTest(i,j,filter) {
+    function includeTest(i, j, filter) {
         // test for there or not there and if wrong - then return false else return true
         if (!zot(filter.data) && filter.data.indexOf(that.info[j][i].data) == -1) return false;
         if (!zot(filter.notData) && filter.notData.indexOf(that.info[j][i].data) != -1) return false;
@@ -1204,25 +1204,28 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
         if (!zot(filter.notColor) && filter.notColor.indexOf(that.info[j][i].color) != -1) return false;
         if (!zot(filter.icon) && (!that.info[j][i].icon || filter.icon.indexOf(that.info[j][i].icon.type) == -1)) return false;
         if (!zot(filter.notIcon) && (that.info[j][i].icon && filter.notIcon.indexOf(that.info[j][i].icon.type) != -1)) return false;
+        
         if (!zot(filter.item) || !zot(filter.notItem)) {
-            var itemList = that.getItems(i,j);
+            var itemList = that.getItems(i, j);
             if (!zot(filter.item)) {
-                var noMatch = zim.loop(itemList, function (it) {
-                    if (filter.item.indexOf(it) != -1) return true;
+                var noMatch = zim.loop(itemList, function(it) {
+                    if (filter.item.indexOf(it) != -1) return "yes";
                 });
-                if (noMatch) return false;
+                // making it through the loop returns true and we are supposed to match something
+                if (noMatch === true) return false;
             }
             if (!zot(filter.notItem)) {
-                var noMatch = zim.loop(itemList, function (it) {
-                    if (filter.notItem.indexOf(it) != -1) return true;
+                var match = zim.loop(itemList, function(it) {
+                    if (filter.notItem.indexOf(it) != -1) return "yes";
                 });
-                if (!noMatch) return false;
+                // we matched something and we are not supposed to
+                if (match == "yes") return false;
             }
         }
-        if (!zot(filter.col) && filter.col.indexOf(i-startCol) == -1) return false;
-        if (!zot(filter.row) && filter.row.indexOf(j-startRow) == -1) return false;
-        if (!zot(filter.notCol) && filter.notCol.indexOf(i-startCol) != -1) return false;
-        if (!zot(filter.notRow) && filter.notRow.indexOf(j-startRow) != -1) return false;
+        if (!zot(filter.col) && filter.col.indexOf(i - startCol) == -1) return false;
+        if (!zot(filter.row) && filter.row.indexOf(j - startRow) == -1) return false;
+        if (!zot(filter.notCol) && filter.notCol.indexOf(i - startCol) != -1) return false;
+        if (!zot(filter.notRow) && filter.notRow.indexOf(j - startRow) != -1) return false;
 
         return true;
     }
@@ -1604,48 +1607,71 @@ zim.Orb = function(radius, color, color2, accentColor, accentColor2, flat, alpha
     this.super_constructor();
     this.type = "Orb";
     if (zot(flat)) flat = true;
-    if (zot(radius)) radius = flat?16:22;
-    if (zot(color)) color = flat?zim.blue:zim.purple;
-    if (zot(color2)) color2 = flat?zim.darker:null;
-    if (zot(accentColor)) accentColor = flat?null:zim.pink;
-    if (zot(accentColor2)) accentColor2 = flat?null:null;
+    if (zot(radius)) radius = flat ? 16 : 22;
+    if (zot(color)) color = flat ? zim.blue : zim.purple;
+    if (zot(color2)) color2 = flat ? zim.darker : null;
+    if (zot(accentColor)) accentColor = flat ? null : zim.pink;
+    if (zot(accentColor2)) accentColor2 = flat ? null : null;
     if (zot(alpha)) alpha = .5;
     var timeType = typeof TIME == "undefined" ? "seconds" : TIME;
-    if (zot(time)) time = timeType=="seconds"?1:1000;
-    if (zot(delay)) delay = timeType=="seconds"?1:1000;
+    if (zot(time)) time = timeType == "seconds" ? 1 : 1000;
+    if (zot(delay)) delay = timeType == "seconds" ? 1 : 1000;
     radius = zik(radius);
     color = zik(color);
     color2 = zik(color2);
     accentColor = zik(accentColor);
     accentColor2 = zik(accentColor2);
 
+    var that = this;
+
     if (flat) {
-        new zim.Circle(radius, color, accentColor)
+        that.circle = new zim.Circle(radius, color, accentColor)
             .alp(.9)
-            .sca(1,1)
+            .sca(1, 1)
             .addTo(this)
-            .animate({obj:{alpha:alpha}, time:time, loop:true, rewind:true});
-        new zim.Circle(7, color2, accentColor2).sca(1,1).addTo(this);
-        this.centerReg(null,null,false).reg(0,2);
+            .animate({obj: {alpha: alpha}, time: time, loop: true, rewind: true});
+        that.circle2 = new zim.Circle(7, color2, accentColor2).sca(1, 1).addTo(this);
+        this.centerReg(null, null, false).reg(0, 2);
     } else {
-        var circle = new zim.Circle(radius).reg(null,14/22*radius).addTo(this);
-        circle.colorCommand.radialGradient([color,accentColor],[0,.8],0,0,22,8,-8,0);
+        var circle = that.circle = new zim.Circle(radius).reg(null, 14 / 22 * radius).addTo(this);
+        circle.colorCommand.radialGradient([color, accentColor], [0, .8], 0, 0, 22, 8, -8, 0);
         circle.cache();
         if (color2) {
-            var circle2 = new zim.Circle(radius*1.3).reg(null,14/22*radius).addTo(this).alp(0);
-            circle2.colorCommand.radialGradient([color2,accentColor2],[0,.8],0,0,22,8,-8,0);
+            var circle2 = that.circle2 = new zim.Circle(radius * 1.3).reg(null, 14 / 22 * radius).addTo(this).alp(0);
+            circle2.colorCommand.radialGradient([color2, accentColor2], [0, .8], 0, 0, 22, 8, -8, 0);
             circle2.cache();
             circle2.cache().animate({
-                props:{alpha:alpha},
-                wait:delay,
-                loop:true,
-                rewind:true,
-                loopWait:delay,
-                time:time
+                props: {alpha: alpha},
+                wait: delay,
+                loop: true,
+                rewind: true,
+                loopWait: delay,
+                time: time
             });
         }
     }
-}
+
+    Object.defineProperty(this, 'color', {
+        get: function() {
+            return color;
+        },
+        set: function(value) {
+            color = zik(value);
+            that.circle.color = color;
+        }
+    });
+
+    Object.defineProperty(this, 'color2', {
+        get: function() {
+            return color2;
+        },
+        set: function(value) {
+            color2 = zik(value);
+            that.circle2.color = color2;
+        }
+    });
+
+};
 zim.extend(zim.Orb, zim.Container);
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

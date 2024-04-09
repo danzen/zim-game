@@ -1,5 +1,5 @@
 
-import {Container, Rectangle, Container, Label, Stage, DisplayObject, Point, Tile, Shape, Arrow} from "zimjs"
+import {Container, Circle, Rectangle, Label, Stage, DisplayObject, Point, Tile, Shape, Arrow} from "zimjs"
 
 declare namespace zim {
 
@@ -144,6 +144,10 @@ declare namespace zim {
     export class Orb extends Container {
         constructor(config_or_radius?:number, color?:string, color2?:string, accentColor?:string, accentColor2?:string, flat?:boolean, alpha?:number, time?:number, delay?:number)
         constructor(config:{radius?:number, color?:string, color2?:string, accentColor?:string, accentColor2?:string, flat?:boolean, alpha?:number, time?:number, delay?:number})
+        color:string
+        color2:string 
+        circle:Circle
+        circle2:Circle
         readonly boardCol:number
         readonly boardRow:number
         readonly moving:boolean
