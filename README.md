@@ -1,6 +1,6 @@
 ![game](https://github.com/danzen/zim-game/assets/380281/a382dc67-cd3b-47a5-a7c4-9160f427081f)
 
-ZIM Game is a helper module for the ZIM JavaScript Cavnas Framework at https://zimjs.com.  The module includes the following classes:
+ZIM Game is a helper module for the ZIM JavaScript Canvas Framework at https://zimjs.com.  The module includes the following classes:
 
 - LeaderBoard https://zimjs.com/leaderboard
 - Board https://zimjs.com/iso/
