@@ -513,11 +513,11 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
 
     if (zot(size)) size = 50;
     this.size = size;
-    if (zot(cols)) cols = zot(rows)?8:rows;
+    if (zot(cols)) cols = zot(rows) ? 8 : rows;
     if (zot(rows)) rows = cols;
     this.cols = cols;
     this.rows = rows;
-    this.num = cols*rows;
+    this.num = cols * rows;
     if (zot(backgroundColor)) backgroundColor = "#eee";
     if (zot(rollBackgroundColor)) rollBackgroundColor = "#aaa";
     if (zot(borderColor)) borderColor = "#111";
@@ -529,21 +529,21 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
     if (zot(indicatorBorderWidth)) indicatorBorderWidth = 2;
     if (zot(indicatorType)) indicatorType = "circle";
     if (indicatorType != "circle") indicatorType = "rectangle";
-    if (zot(indicatorSize)) indicatorSize = indicatorType=="rectangle"?(size-indicatorBorderWidth):size/4;
+    if (zot(indicatorSize)) indicatorSize = indicatorType == "rectangle" ? (size - indicatorBorderWidth) : size / 4;
     if (zot(arrows)) arrows = true;
     if (zot(arrowColor)) arrowColor = "rgba(0,0,0,.4)";
     if (zot(arrowRollColor)) arrowRollColor = "#fff";
     if (zot(swipe)) swipe = arrows;
-    
+
     var timeType = typeof TIME == "undefined" ? "seconds" : TIME;
 
     function emptyInfo() {
         // info is rows (j) then cols (i)
         info = [];
-        zim.loop(rows, function (j) {
+        zim.loop(rows, function(j) {
             var inf = info[j] = [];
-            zim.loop(cols, function (i) {
-                inf[i]={data:"x", color:backgroundColor, icon:icon?icon.clone():null, items:[]};
+            zim.loop(cols, function(i) {
+                inf[i] = {data: "x", color: backgroundColor, icon: icon ? icon.clone() : null, items: []};
             });
         });
     }
@@ -553,27 +553,27 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
     } else if (typeof info == "string") {
         if (info.match(/zimon/) && typeof ZIMON !== 'undefined') info = ZIMON.parse(info);
         else emptyInfo();
-    } else if (!Array.isArray(info) || info.length==0) {
+    } else if (!Array.isArray(info) || info.length == 0) {
         emptyInfo();
     } else {
         // info are rows (j) then cols (i)
-        info2 = [];
+        var info2 = [];
         var i0 = 0;
         // get most cols
-        zim.loop(Math.max(cols,info.length), function (j) {
+        zim.loop(Math.max(cols, info.length), function(j) {
             if (info[j] && info[j].length > i0) i0 = info[j].length;
         });
-        zim.loop(Math.max(cols,info.length), function (j) {
+        zim.loop(Math.max(cols, info.length), function(j) {
             var inf = info2[j] = [];
-            zim.loop(Math.max(rows, i0), function (i) {
+            zim.loop(Math.max(rows, i0), function(i) {
                 if (info[j] && !zot(info[j][i])) {
                     if (zot(info[j][i].data)) info[j][i].data = "x";
                     if (zot(info[j][i].color)) info[j][i].color = backgroundColor;
-                    if (zot(info[j][i].icon)) info[j][i].icon = icon?icon.clone():null;
+                    if (zot(info[j][i].icon)) info[j][i].icon = icon ? icon.clone() : null;
                     if (zot(info[j][i].items)) info[j][i].items = [];
                     inf[i] = info[j][i];
                 }
-                else inf[i]={data:"x", color:backgroundColor, icon:icon?icon.clone():null, items:[]};
+                else inf[i] = {data: "x", color: backgroundColor, icon: icon ? icon.clone() : null, items: []};
             });
         });
         info = copy(info2);
@@ -592,17 +592,17 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
     var that = this;
     var holder = new zim.Container().addTo(this);
     var container = new zim.Container(size, size);
-    new zim.Rectangle(size,size,zik(backgroundColor),zik(borderColor),zik(borderWidth)).addTo(container);
+    new zim.Rectangle(size, size, zik(backgroundColor), zik(borderColor), zik(borderWidth)).addTo(container);
     // labels for debugging
-    if (labels) new zim.Label({text:"", color:color, align:"center", valign:"center"}).center(container);
+    if (labels) new zim.Label({text: "", color: color, align: "center", valign: "center"}).center(container);
     var tiles = this.tiles = new zim.Tile(container.centerReg(), cols, rows);
 
     if (isometric) {
         tiles.rot(45)
-            .centerReg(holder)
-        holder.sca(2,1);
+            .centerReg(holder);
+        holder.sca(2, 1);
     } else {
-        tiles.centerReg(holder)
+        tiles.centerReg(holder);
     }
     this.arrows = arrows;
 
@@ -616,7 +616,7 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
             return that.info[0].length;
         },
         set: function(value) {
-            zog("zim.Board() - numCols is read only")
+            zog("zim.Board() - numCols is read only");
         }
     });
 
@@ -625,7 +625,7 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
             return that.info.length;
         },
         set: function(value) {
-            zog("zim.Board() - numRows is read only")
+            zog("zim.Board() - numRows is read only");
         }
     });
     Object.defineProperty(this, 'startCol', {
@@ -633,10 +633,10 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
             return startCol;
         },
         set: function(value) {
-            startCol = zim.constrain(value, 0, that.numCols-cols);
+            startCol = zim.constrain(value, 0, that.numCols - cols);
             if (startCol != lastStartCol) {
                 that.update();
-                that.shiftPath(lastStartCol,startCol); // no obj so for all pieces
+                that.shiftPath(lastStartCol, startCol); // no obj so for all pieces
             }
             lastStartCol = startCol;
         }
@@ -647,10 +647,10 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
             return startRow;
         },
         set: function(value) {
-            startRow = zim.constrain(value, 0, that.numRows-rows);
+            startRow = zim.constrain(value, 0, that.numRows - rows);
             if (startRow != lastStartRow) {
                 that.update();
-                that.shiftPath(null,null,lastStartRow,startRow); // no obj so for all pieces
+                that.shiftPath(null, null, lastStartRow, startRow); // no obj so for all pieces
             }
             lastStartRow = startRow;
         }
@@ -660,17 +660,17 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
         // gets board data only - not all data
         get: function() {
             var data = [];
-            zim.loop(startRow+rows, function (j) {
+            zim.loop(startRow + rows, function(j) {
                 var d = [];
                 data.push(d);
-                zim.loop(startCol+cols, function (i) {
+                zim.loop(startCol + cols, function(i) {
                     d.push(that.info[j][i].data);
-                },null,null,startCol);
-            },null,null,startRow);
+                }, null, null, null, startCol);
+            }, null, null, null, startRow);
             return data;
         },
         set: function(value) {
-            zog("zim.Board() - data is read only - use setData(tile) or change info property and update()")
+            zog("zim.Board() - data is read only - use setData(tile) or change info property and update()");
         }
     });
 
@@ -685,18 +685,18 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
                 if (isometric) {
                     holder.removeAllChildren();
                     that.tiles.rot(45).centerReg(holder);
-                    var ss = isoFirst?1:1.2
-                    holder.sca(2/ss,1/ss).mov(0,(isoFirst?20:0));
+                    var ss = isoFirst ? 1 : 1.2;
+                    holder.sca(2 / ss, 1 / ss).mov(0, (isoFirst ? 20 : 0));
                 } else {
                     holder.removeAllChildren();
                     that.tiles.rot(0).centerReg(holder);
-                    holder.sca(1*(isoFirst?1.2:1)).mov(0,(isoFirst?-20:0));
+                    holder.sca(1 * (isoFirst ? 1.2 : 1)).mov(0, (isoFirst ? -20 : 0));
                 }
                 if (swipe) {
-                    var swap = {left:"right", right:"left", up:"down", down:"up"};
+                    var swap = {left: "right", right: "left", up: "down", down: "up"};
                     if (that.swipeEvent) that.swipe.off("swipe", that.swipeEvent);
                     that.swipe = new zim.Swipe(that, null, null, isometric);
-                    that.swipeEvent = that.swipe.on("swipe", function (e) {
+                    that.swipeEvent = that.swipe.on("swipe", function(e) {
                         if (e.target.direction == "none") return;
                         that.moveCamera(swap[e.target.direction]);
                     });
@@ -711,35 +711,36 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
     this.update = function() {
         // updates data, colors and pieces for currently visible board
         if (labels) {
-            tiles.loop(function (tile) {
+            tiles.loop(function(tile) {
                 tile.getChildAt(1).text = that.getData(tile);
             });
         }
-        that.pieces.loop(function (piece) {
+        that.pieces.loop(function(piece) {
             piece.visible = false;
         });
         that.clearBoardColors();
         that.clearBoardIcons();
-        zim.loop(rows+startRow, function (j) {
-            zim.loop(cols+startCol, function (i) {
+
+        zim.loop(rows + startRow, function(j) {
+            zim.loop(cols + startCol, function(i) {
                 var info = that.info[j][i];
-                var tile = that.getTile(i-startCol, j-startRow);
+                var tile = that.getTile(i - startCol, j - startRow);
                 that.setColor(tile, info.color, true);
                 if (info.icon) that.setIcon(tile, info.icon, true);
-                zim.loop(info.items, function (item) {
-                    that.add(item, i-startCol, j-startRow, null, null, null, true);
+                zim.loop(info.items, function(item) {
+                    that.add(item, i - startCol, j - startRow, null, null, null, true);
                 });
-            },null,null,startCol);
-        },null,null,startRow);
+            }, null, null, null, startCol);
+        }, null, null, null, startRow);
         if (that.stage) that.stage.update();
         return that;
-    }
+    };
 
     if (swipe) {
         this.swipe = new zim.Swipe(this, null, null, isometric);
-        this.swipeEvent = this.swipe.on("swipe", function (e) {
+        this.swipeEvent = this.swipe.on("swipe", function(e) {
             if (e.target.direction == "none") return;
-            var swap = {left:"right", right:"left", up:"down", down:"up"};
+            var swap = {left: "right", right: "left", up: "down", down: "up"};
             that.moveCamera(swap[e.target.direction]);
         });
     }
@@ -749,46 +750,46 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
         // by setting startCol and startRow
         // which moves any items, paths and sets activeData
         if (dir == "left") {
-            if (that.arrowRight && startCol == that.numCols-cols) that.arrowRight.hov(arrowRollColor);
-            that.startCol = startCol-1;
+            if (that.arrowRight && startCol == that.numCols - cols) that.arrowRight.hov(arrowRollColor);
+            that.startCol = startCol - 1;
             if (that.arrowLeft && startCol == 0) that.arrowLeft.hov(-1);
         } else if (dir == "right") {
             if (that.arrowLeft && startCol == 0) that.arrowLeft.hov(arrowRollColor);
-            that.startCol = startCol+1;
-            if (that.arrowRight && startCol == that.numCols-cols) that.arrowRight.hov(-1);
+            that.startCol = startCol + 1;
+            if (that.arrowRight && startCol == that.numCols - cols) that.arrowRight.hov(-1);
         } else if (dir == "up") {
-            if (that.arrowDown && startRow == that.numRows-rows) that.arrowDown.hov(arrowRollColor);
-            that.startRow = startRow-1;
+            if (that.arrowDown && startRow == that.numRows - rows) that.arrowDown.hov(arrowRollColor);
+            that.startRow = startRow - 1;
             if (that.arrowUp && startRow == 0) that.arrowUp.hov(-1);
         } else if (dir == "down") {
             if (that.arrowUp && startRow == 0) that.arrowUp.hov(arrowRollColor);
-            that.startRow = startRow+1;
-            if (that.arrowDown && startRow == that.numRows-rows) that.arrowDown.hov(-1);
+            that.startRow = startRow + 1;
+            if (that.arrowDown && startRow == that.numRows - rows) that.arrowDown.hov(-1);
         }
         return that;
-    }
+    };
 
-    this.positionBoard = function(i,j) {
+    this.positionBoard = function(i, j) {
         // starts board off at provided location in info
         that.startCol = i;
         that.startRow = j;
         if (that.arrows) that.setArrowHover();
         return that;
-    }
+    };
 
     this.setArrowHover = function() {
-        if (that.arrowLeft) that.arrowLeft.hov(startCol==0?-1:arrowRollColor);
-        if (that.arrowRight) that.arrowRight.hov(startCol==that.numCols-cols?-1:arrowRollColor);
-        if (that.arrowUp) that.arrowUp.hov(startRow==0?-1:arrowRollColor);
-        if (that.arrowDown) that.arrowDown.hov(startRow==that.numRows-rows?-1:arrowRollColor);
+        if (that.arrowLeft) that.arrowLeft.hov(startCol == 0 ? -1 : arrowRollColor);
+        if (that.arrowRight) that.arrowRight.hov(startCol == that.numCols - cols ? -1 : arrowRollColor);
+        if (that.arrowUp) that.arrowUp.hov(startRow == 0 ? -1 : arrowRollColor);
+        if (that.arrowDown) that.arrowDown.hov(startRow == that.numRows - rows ? -1 : arrowRollColor);
         return that;
-    }
+    };
 
     this.addCol = function(index) {
         // adds info column at an index
         if (zot(index)) index = that.numCols;
-        zim.loop(that.info, function (inf, i) {
-            inf.splice(index, 0, {data:"x", color:backgroundColor, icon:icon?icon.clone():null, items:[]});
+        zim.loop(that.info, function(inf, i) {
+            inf.splice(index, 0, {data: "x", color: backgroundColor, icon: icon ? icon.clone() : null, items: []});
         });
         if (that.arrows) {
             that.setArrows();
@@ -796,14 +797,14 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
         }
         that.update();
         return that;
-    }
+    };
 
     this.addRow = function(index) {
         // adds info row at an index
         if (zot(index)) index = that.numRows;
         var inf = [];
-        zim.loop(that.numCols, function () {
-            inf.push({data:"x", color:backgroundColor, icon:icon?icon.clone():null, items:[]});
+        zim.loop(that.numCols, function() {
+            inf.push({data: "x", color: backgroundColor, icon: icon ? icon.clone() : null, items: []});
         });
         that.info.splice(index, 0, inf);
         if (that.arrows) {
@@ -812,72 +813,74 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
         }
         that.update();
         return that;
-    }
+    };
 
     this.setArrows = function() {
         // sets arrows to handle shifting board
         if (!that.arrows) return;
         if (that.info.length > rows || that.info[0].length > cols) {
             if (!that.arrowUp) {
-                that.arrowUp = new Triangle({color:arrowColor}).sca(.4).center(holder)
+                that.arrowUp = new Triangle({color: arrowColor}).sca(.4).center(holder);
                 if (isometric) {
                     that.arrowUp
                         .rot(45)
-                        .mov(tiles.width/2, tiles.width/2-50);
+                        .mov(tiles.width / 2, tiles.width / 2 - 50);
                 } else {
                     that.arrowUp
-                        .mov(tiles.width/2+40, -30);
+                        .mov(tiles.width / 2 + 40, -30);
                 }
-                that.arrowDown = new Triangle({color:arrowColor}).sca(.4).center(holder)
+                that.arrowDown = new Triangle({color: arrowColor}).sca(.4).center(holder);
                 if (isometric) {
                     that.arrowDown
-                        .rot(+45-180)
-                        .mov(tiles.width/2-50, tiles.width/2);
+                        .rot(+45 - 180)
+                        .mov(tiles.width / 2 - 50, tiles.width / 2);
                 } else {
                     that.arrowDown
                         .rot(-180)
-                        .mov(tiles.width/2+10, +30);
+                        .mov(tiles.width / 2 + 10, +30);
                 }
-                that.arrowUp.on("mousedown", function () {
+                that.arrowUp.on("mousedown", function() {
                     that.moveCamera("up");
+                    if (that.stage) that.stage.update();
                 });
-                that.arrowDown.on("mousedown", function () {
+                that.arrowDown.on("mousedown", function() {
                     that.moveCamera("down");
+                    if (that.stage) that.stage.update();
                 });
             }
         } else { // may have removed data so no scroll is needed
             if (that.arrowUp) removeRowArrows();
         }
-        var colArrows = zim.loop(that.info, function (d) {
+        var colArrows = zim.loop(that.info, function(d) {
             if (d.length > cols) return "yes";
         });
         if (colArrows == "yes") {
             if (!that.arrowLeft) {
-                that.arrowLeft = new Triangle({color:arrowColor}).sca(.4).cur().center(holder);
+                that.arrowLeft = new Triangle({color: arrowColor}).sca(.4).cur().center(holder);
                 if (isometric) {
                     that.arrowLeft
-                        .rot(+45-180+90)
-                        .mov(-tiles.width/2, tiles.width/2-50);
+                        .rot(+45 - 180 + 90)
+                        .mov(-tiles.width / 2, tiles.width / 2 - 50);
                 } else {
                     that.arrowLeft
-                        .rot(-180+90)
-                        .mov(-60, tiles.width/2+40);
+                        .rot(-180 + 90)
+                        .mov(-60, tiles.width / 2 + 40);
                 }
-                that.arrowRight = new Triangle({color:arrowColor}).sca(.4).center(holder);
-                that.arrowRight.n = "b"
+                that.arrowRight = new Triangle({color: arrowColor}).sca(.4).center(holder);
+                that.arrowRight.n = "b";
                 if (isometric) {
                     that.arrowRight
-                        .rot(45+90)
-                        .mov(-tiles.width/2+50, tiles.width/2);
+                        .rot(45 + 90)
+                        .mov(-tiles.width / 2 + 50, tiles.width / 2);
                 } else {
                     that.arrowRight
                         .rot(+90)
-                        .mov(0, tiles.width/2+10);
+                        .mov(0, tiles.width / 2 + 10);
                 }
-                that.arrowLeft.on("mousedown", function () {
+                that.arrowLeft.on("mousedown", function() {
                     that.moveCamera("left");
                 });
-                that.arrowRight.on("mousedown", function () {
+                that.arrowRight.on("mousedown", function() {
                     that.moveCamera("right");
                 });
                 // FIX bounds so move camera not board
@@ -887,14 +890,14 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
             if (that.arrowLeft) removeColArrows();
         }
         return that;
-    }
+    };
     that.setArrows();
 
     this.removeArrows = function() {
         removeColArrows();
         removeRowArrows();
         return that;
-    }
+    };
     function removeColArrows() {
         if (!that.arrowLeft || !that.arrowRight) return;
         that.arrowLeft.removeAllEventListeners();
@@ -915,7 +918,7 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
     }
 
     that.lastTile = null;
-    tiles.tap(function (e) {
+    tiles.tap(function(e) {
         that.currentTile = e.target;
     });
     tiles.on("mouseover", function(e) {
@@ -930,7 +933,7 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
     tiles.on("mouseout", outHandler);
     zimDefaultFrame.canvas.addEventListener("mouseleave", outHandler);
     function outHandler(e) {
-        that.timeout = zim.timeout(timeType=="seconds"?.05:50, function () {
+        that.timeout = zim.timeout(timeType == "seconds" ? .05 : 50, function() {
             that.currentTile = null;
             that.lastTile = null;
             that.dispatchEvent("change");
@@ -944,73 +947,73 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
     this.getIndexes = function(tile) {
         // gets the row and col for a tile
         var n = tiles.getChildIndex(tile);
-        var col = n%cols;
-        var row = Math.floor(n/cols);
-        return {col:col, row:row};
-    }
+        var col = n % cols;
+        var row = Math.floor(n / cols);
+        return {col: col, row: row};
+    };
 
     this.getInfo = function(a, b) {
         // gets the info object for a tile (or i,j info point)
         if (zot(a)) return;
         if (zot(b)) {
             var indexes = that.getIndexes(a);
-            a = indexes.col+startCol;
-            b = indexes.row+startRow;
+            a = indexes.col + startCol;
+            b = indexes.row + startRow;
         }
-        if (a < 0 || a > that.numCols-1 || b < 0 || b > that.numRows-1) return;
+        if (a < 0 || a > that.numCols - 1 || b < 0 || b > that.numRows - 1) return;
         return that.info[b][a];
-    }
+    };
     this.getData = function(a, b) {
         // gets items from info for a tile (or i,j info point)
         if (zot(a)) return;
         return that.getInfo(a, b).data;
-    }
+    };
     this.getColor = function(a, b) {
         // gets the color data for a tile (or i,j info point)
         if (zot(a)) return;
         return that.getInfo(a, b).color;
-    }
+    };
     this.getIcon = function(a, b) {
         // gets the icon for a tile (or i,j info point)
         if (zot(a)) return;
         return that.getInfo(a, b).icon;
-    }
+    };
     this.getItems = function(a, b) {
         // gets items from info for a tile (or i,j info point)
         if (zot(a)) return;
         var i = that.getInfo(a, b);
         if (i) return that.getInfo(a, b).items;
-    }
+    };
     this.getAllItems = function(filter) {
         // gets an array of all items - add optional filter
         var items = [];
         if (zot(filter)) filter = {};
         else filter = normalizeFilter(filter);
-        zim.loop(that.info, function (rows, j) {
-            zim.loop(rows, function (info, i) {
-                if (!includeTest(i,j,filter)) return;
-                zim.loop(info.items, function (item) {
+        zim.loop(that.info, function(rows, j) {
+            zim.loop(rows, function(info, i) {
+                if (!includeTest(i, j, filter)) return;
+                zim.loop(info.items, function(item) {
                     items.push(item);
                 });
             });
         });
         return items;
-    }
+    };
     this.getTilesAround = function(a, b) {
         // gets tiles around a tile (or i,j info point)
         if (zot(a)) return;
         if (zot(b)) {
             var indexes = that.getIndexes(a);
-            a = indexes.col+startCol;
-            b = indexes.row+startRow;
+            a = indexes.col + startCol;
+            b = indexes.row + startRow;
         }
-        if (a < 0 || a > that.numCols-1 || b < 0 || b > that.numRows-1) return [];
+        if (a < 0 || a > that.numCols - 1 || b < 0 || b > that.numRows - 1) return [];
         return [
-            that.getTile(a-1,b-1), that.getTile(a-0,b-1), that.getTile(a+1,b-1),
-            that.getTile(a+1,b-0),that.getTile(a+1,b+1), that.getTile(a-0,b+1),
-            that.getTile(a-1,b+1), that.getTile(a-1,b-0)
+            that.getTile(a - 1, b - 1), that.getTile(a - 0, b - 1), that.getTile(a + 1, b - 1),
+            that.getTile(a + 1, b - 0), that.getTile(a + 1, b + 1), that.getTile(a - 0, b + 1),
+            that.getTile(a - 1, b + 1), that.getTile(a - 1, b - 0)
         ];
-    }
+    };
     tiles.loop(function(t) {
         if (indicatorType == "circle") {
             t.indicator = new Circle(zik(indicatorSize), zik(indicatorColor), zik(indicatorBorderColor), indicatorBorderWidth).center(t).alp(0);
@@ -1029,22 +1032,22 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
 
     this.getTile = function(col, row) {
         // gets tile at visible col and row
-        if (col<0||row<0||col>that.cols-1||row>that.rows-1) return;
-        return tiles.getChildAt(row*cols+col);
-    }
+        if (col < 0 || row < 0 || col > that.cols - 1 || row > that.rows - 1) return;
+        return tiles.getChildAt(row * cols + col);
+    };
 
     this.setData = function(tile, value) {
         // updates a data entry for a tile
         that.getInfo(tile).data = value;
         return that.data;
-    }
+    };
 
     this.setColor = function(tile, color, internal) {
         // adds a color to board and info for the color
         tile.lastColor = tile.getChildAt(0).color = color;
         if (zot(internal)) that.getInfo(tile).color = color;
         return that;
-    }
+    };
 
     this.setIcon = function(tile, icon, internal) {
         if (zot(icon)) return;
@@ -1054,26 +1057,26 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
         tile.icon = icon;
         icon.center(tile.getChildAt(0));
         return that;
-    }
+    };
 
     this.clearInfo = function(filter) {
         if (zot(filter)) filter = {};
         else filter = normalizeFilter(filter);
         // clears info for data, colors and items
-        zim.loop(that.info, function (rows, j) {
-            zim.loop(rows, function (inf, i) {
-                if (!includeTest(i,j,filter)) return;
+        zim.loop(that.info, function(rows, j) {
+            zim.loop(rows, function(inf, i) {
+                if (!includeTest(i, j, filter)) return;
                 inf.data = "x";
-                zim.loop(inf.items, function (item) {
+                zim.loop(inf.items, function(item) {
                     item.boardCol = null;
                     item.boardRow = null;
                     item.tile = null;
                     item.removeFrom();
                 });
                 inf.items = [];
-                inf.icon = that.icon?that.icon.clone():null;
+                inf.icon = that.icon ? that.icon.clone() : null;
                 inf.color = backgroundColor;
-                var tile = that.getTile(i-startCol, j-startRow);
+                var tile = that.getTile(i - startCol, j - startRow);
                 if (tile) {
                     tile.getChildAt(0).color = backgroundColor;
                     if (inf.icon) inf.icon.center(tile.getChildAt(0));
@@ -1081,27 +1084,27 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
             });
         });
         return that;
-    }
+    };
     this.clearData = function(filter) {
         if (zot(filter)) filter = {};
         else filter = normalizeFilter(filter);
         // clears data but leaves colors and items
-        zim.loop(that.info, function (rows, j) {
-            zim.loop(rows, function (info, i) {
-                if (!includeTest(i,j,filter)) return;
+        zim.loop(that.info, function(rows, j) {
+            zim.loop(rows, function(info, i) {
+                if (!includeTest(i, j, filter)) return;
                 info.data = "x";
             });
         });
         return that;
-    }
+    };
     this.clearItems = function(filter) {
         if (zot(filter)) filter = {};
         else filter = normalizeFilter(filter);
         // clears items but leaves data and colors
-        zim.loop(that.info, function (rows, j) {
-            zim.loop(rows, function (info, i) {
-                if (!includeTest(i,j,filter)) return;
-                zim.loop(info.items, function (item) {
+        zim.loop(that.info, function(rows, j) {
+            zim.loop(rows, function(info, i) {
+                if (!includeTest(i, j, filter)) return;
+                zim.loop(info.items, function(item) {
                     item.boardCol = null;
                     item.boardRow = null;
                     item.tile = null;
@@ -1111,48 +1114,48 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
             });
         });
         return that;
-    }
+    };
     this.clearColors = function(filter) {
         if (zot(filter)) filter = {};
         else filter = normalizeFilter(filter);
         // clears color but leaves data and items
-        zim.loop(that.info, function (rows, j) {
-            zim.loop(rows, function (info, i) {
-                if (!includeTest(i,j,filter)) return;
+        zim.loop(that.info, function(rows, j) {
+            zim.loop(rows, function(info, i) {
+                if (!includeTest(i, j, filter)) return;
                 info.color = backgroundColor;
-                var tile = that.getTile(i-startCol, j-startRow);
+                var tile = that.getTile(i - startCol, j - startRow);
                 if (tile) tile.getChildAt(0).color = backgroundColor;
             });
         });
         return that;
-    }
+    };
     this.clearBoardColors = function() {
         // clears board colors but leaves color info
         zim.loop(tiles, function(tile) {
             tile.getChildAt(0).color = backgroundColor;
         });
         return that;
-    }
+    };
     this.clearIcons = function(filter) {
         if (zot(filter)) filter = {};
         else filter = normalizeFilter(filter);
 
         // clears color but leaves data and items
-        zim.loop(that.info, function (rows, j) {
-            zim.loop(rows, function (info, i) {
-                if (!includeTest(i,j,filter)) return;
+        zim.loop(that.info, function(rows, j) {
+            zim.loop(rows, function(info, i) {
+                if (!includeTest(i, j, filter)) return;
                 if (info.icon) {
                     info.icon.removeFrom();
                     if (info.icon.dispose) info.icon.dispose();
                     info.icon = null;
                 }
-                info.icon = that.icon?that.icon.clone():null;
-                var tile = that.getTile(i-startCol, j-startRow);
+                info.icon = that.icon ? that.icon.clone() : null;
+                var tile = that.getTile(i - startCol, j - startRow);
                 if (tile && info.icon) info.icon.center(tile.getChildAt(0));
             });
         });
         return that;
-    }
+    };
     this.clearBoardIcons = function() {
         // clears board icons but leaves icon info
         zim.loop(tiles, function(tile) {
@@ -1160,7 +1163,7 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
             tile.icon = null;
         });
         return that;
-    }
+    };
 
     this.getRandomTile = function(filter) {
         if (zot(filter)) filter = {};
@@ -1234,15 +1237,15 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
         // gets x and y of tile (or i,j) in items coordinates
         if (zot(a)) return;
         if (zot(b)) return tiles.localToLocal(a.x, a.y, that.pieces);
-        return tiles.localToLocal((a-startCol)*size+size/2, (b-startRow)*size+size/2, that.pieces);
-    }
+        return tiles.localToLocal((a - startCol) * size + size / 2, (b - startRow) * size + size / 2, that.pieces);
+    };
 
     this.getGlobalPoint = function(a, b) {
         // gets x and y of tile (or i,j) in global coordinates
         if (zot(a)) return;
         if (zot(b)) return tiles.localToGlobal(a.x, a.y);
-        return tiles.localToGlobal((a-startCol)*size+size/2, (b-startRow)*size+size/2);
-    }
+        return tiles.localToGlobal((a - startCol) * size + size / 2, (b - startRow) * size + size / 2);
+    };
 
     this.pieces = new zim.Container().addTo(this);
     this.pieces.mouseChildren = false;
@@ -1250,51 +1253,51 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
 
     this.setDepth = function() {
         var piecesArray = [];
-        that.pieces.loop(function (piece) {
+        that.pieces.loop(function(piece) {
             piecesArray.push(piece);
-        })
-        piecesArray.sort(function(a,b) {return a.y - b.y;});
+        });
+        piecesArray.sort(function(a, b) {return a.y - b.y;});
         loop(piecesArray, function(piece) {
             piece.addTo(that.pieces);
         });
         return that;
-    }
+    };
 
     // col and row always refer to visible tile (unless startCol and startRow)
     this.position = function(obj, col, row, internal) {
         // positions object at visible row and col - no animation
         // called by place and when board arrows are used
-        if (col < 0 || col > cols-1 || row < 0 || row > rows-1) obj.visible = false;
+        if (col < 0 || col > cols - 1 || row < 0 || row > rows - 1) obj.visible = false;
         else {
-            if (obj.type=="Emitter") obj.particles.visible = true;
+            if (obj.type == "Emitter") obj.particles.visible = true;
             else obj.visible = true;
         }
-        var i = startCol+col;
-        var j = startRow+row;
+        var i = startCol + col;
+        var j = startRow + row;
         i = zim.constrain(i, 0, that.numCols);
         j = zim.constrain(j, 0, that.numRows);
-        var tile = this.getTile(i-startCol, j-startRow);
+        var tile = this.getTile(i - startCol, j - startRow);
         if (!internal) {
             if (obj.boardItems) obj.boardItems.splice(obj.boardItems.indexOf(obj), 1);
-            obj.boardItems = that.getItems(i,j);
+            obj.boardItems = that.getItems(i, j);
             if (obj.boardItems) obj.boardItems.push(obj);
         } else {
-            obj.boardItems = that.getItems(i,j);
+            obj.boardItems = that.getItems(i, j);
         }
 
-        obj.loc(that.getPoint(i,j), null, that.pieces);
+        obj.loc(that.getPoint(i, j), null, that.pieces);
         if (tile) {
-            if (isometric) obj.sca(obj.proportion.convert(obj.y)*obj.startScaleX, obj.proportion.convert(obj.y)*obj.startScaleY);
+            if (isometric) obj.sca(obj.proportion.convert(obj.y) * obj.startScaleX, obj.proportion.convert(obj.y) * obj.startScaleY);
             that.setDepth();
         }
-        obj.boardCol = i-startCol;
-        obj.boardRow = j-startRow;
+        obj.boardCol = i - startCol;
+        obj.boardRow = j - startRow;
         obj.boardTile = tile;
-        obj.square = j+"-"+i;
+        obj.square = j + "-" + i;
 
         if (obj.dispatchEvent) obj.dispatchEvent("positioned");
         return this;
-    }
+    };
 
     this.add = function(obj, col, row, data, color, icon, internal) {
         // adds object at board col and row (not data but actual visible col and row)
@@ -1306,142 +1309,148 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
             obj.startScaleX = obj.scaleX;
             obj.startScaleY = obj.scaleY;
         }
-        if (isometric && zot(obj.proportion)) obj.proportion = new zim.Proportion(-holder.height/2, holder.height/2, scaleMin, scaleMax);
+        if (isometric && zot(obj.proportion)) obj.proportion = new zim.Proportion(-holder.height / 2, holder.height / 2, scaleMin, scaleMax);
         that.position(obj, col, row, internal);
         var tile = that.getTile(col, row);
         if (!zot(data)) that.setData(tile, data);
         if (!zot(color)) that.setColor(tile, color);
+        
         if (!zot(icon)) that.setIcon(tile, icon);
         if (isometric && !obj.boardEvent) {
-            obj.boardEvent = obj.on("animation", function () {
-                if (obj.visible) obj.sca(obj.proportion.convert(obj.y)*obj.startScaleX, obj.proportion.convert(obj.y)*obj.startScaleY);
+            obj.boardEvent = obj.on("animation", function() {
+                if (obj.visible) obj.sca(obj.proportion.convert(obj.y) * obj.startScaleX, obj.proportion.convert(obj.y) * obj.startScaleY);
                 if (obj.dispatchEvent) obj.dispatchEvent("moving");
             });
         }
         return this;
-    }
+    };
     this.remove = function(obj) {
         // removes item from board and clears it from info
-        if (obj.type=="Emitter") obj.particles.visible = true;
+        if (obj.type == "Emitter") obj.particles.visible = true;
         else obj.visible = true; // so don't confuse coder if obj used elsewhere
         obj.removeFrom();
         if (obj.boardKeyType) that.removeKeys(obj.boardKeyType);
         if (obj.boardItems) obj.boardItems.splice(obj.boardItems.indexOf(obj), 1);
         return this;
-    }
+    };
 
     that.update();
 
     this.moveTo = function(obj, col, row, time, type) {
-        this.move(obj, col-obj.boardCol, row-obj.boardRow, time, type);
+        this.move(obj, col - obj.boardCol, row - obj.boardRow, time, type);
         return that;
-    }
+    };
     this.move = function(obj, col, row, time, type) {
         // animates or places object a certain number of rows or cols
         // used by keyboard or called by app
         if (zot(col)) col = 0;
         if (zot(row)) row = 0;
-        if (zot(time)) time = timeType=="seconds"?.5:500;
+        if (zot(time)) time = timeType == "seconds" ? .5 : 500;
         obj.visible = true;
-        var newCol = zim.constrain(obj.boardCol+col, 0, cols-1);
-        var newRow = zim.constrain(obj.boardRow+row, 0, rows-1);
-        if (that["keyFilter"+type] && !includeTest(newCol+startCol,newRow+startRow,that["keyFilter"+type])) return;
+        var newCol = zim.constrain(obj.boardCol + col, 0, cols - 1);
+        var newRow = zim.constrain(obj.boardRow + row, 0, rows - 1);
+        if (that["keyFilter" + type] && !includeTest(newCol + startCol, newRow + startRow, that["keyFilter" + type])) return;
         if (that.path) that.clearPath();
-        var total = Math.abs(newCol - obj.boardCol) + Math.abs(newRow - obj.boardRow)
+        var total = Math.abs(newCol - obj.boardCol) + Math.abs(newRow - obj.boardRow);
         var newLoc = this.getPoint(this.getTile(newCol, newRow));
-        if (obj.boardCol!=newCol || obj.boardRow!=newRow) {
+        if (obj.boardCol != newCol || obj.boardRow != newRow) {
             obj.nextCol = newCol;
-            obj.nextRow = newRow;                
-            if (obj.dispatchEvent) obj.dispatchEvent("movingstart");
+            obj.nextRow = newRow;
+            var eve = new createjs.Event("movingstart");
+            if (obj.boardCol > newCol) eve.dir = "left";
+            else if (obj.boardCol < newCol) eve.dir = "right";
+            else if (obj.boardRow > newRow) eve.dir = "up";
+            else if (obj.boardRow < newRow) eve.dir = "down";
+            if (obj.dispatchEvent && obj.dispatchEvent) obj.dispatchEvent(eve);
             obj.animate({
-                props:{x:newLoc.x, y:newLoc.y},
-                time:time*total,
-                protect:true,
-                call:function () {
+                props: {x: newLoc.x, y: newLoc.y},
+                time: time * total,
+                protect: true,
+                call: function() {
                     if (that.buffer && that.buffer > 0) {
                         var left = (obj.boardCol > newCol && obj.boardCol <= that.buffer);
-                        var right = (obj.boardCol < newCol && cols-obj.boardCol-1 <= that.buffer);
+                        var right = (obj.boardCol < newCol && cols - obj.boardCol - 1 <= that.buffer);
                         var up = (obj.boardRow > newRow && obj.boardRow <= that.buffer);
-                        var down = (obj.boardRow < newRow && rows-obj.boardRow-1 <= that.buffer);
+                        var down = (obj.boardRow < newRow && rows - obj.boardRow - 1 <= that.buffer);
                     }
-                    that.position(obj,newCol,newRow);
+                    that.position(obj, newCol, newRow);
                     if (that.buffer && that.buffer > 0) {
                         if (left) that.moveCamera("left");
                         if (right) that.moveCamera("right");
                         if (up) that.moveCamera("up");
                         if (down) that.moveCamera("down");
                     }
-                    that["keyCheck"+type] = true;
+                    that["keyCheck" + type] = true;
                     if (obj.dispatchEvent) obj.dispatchEvent("moved");
                     if (obj.dispatchEvent) obj.dispatchEvent("movingdone");
                 },
-                events:true
+                events: true
             });
         }
         return that;
-    }
+    };
     this.addKeys = function(obj, type, filter) {
         // adds either arrows or wasd keys to move provided object
         if (zot(type)) type = "arrows";
         if (type != "arrows") type = "wasd";
         var moveCheck = true;
-        zimDefaultFrame.off("keydown", that["keydown"+type]);
-        zimDefaultFrame.off("keyup", that["keyup"+type]);
-        that["keyCheck"+type] = true;
-        that["keyOjbect"+type] = obj;
+        zimDefaultFrame.off("keydown", that["keydown" + type]);
+        zimDefaultFrame.off("keyup", that["keyup" + type]);
+        that["keyCheck" + type] = true;
+        that["keyOjbect" + type] = obj;
         if (zot(filter)) filter = {};
         else filter = normalizeFilter(filter);
-        if (!zot(filter)) that["keyFilter"+type] = filter;
+        if (!zot(filter)) that["keyFilter" + type] = filter;
         obj.boardKeyType = type;
-        that["keydown"+type] = zimDefaultFrame.on("keydown", function (e) {
+        that["keydown" + type] = zimDefaultFrame.on("keydown", function(e) {
             if (obj.moving) return;
-            if (!that["keyCheck"+type]) return;
-            if (e.keyCode==(type=="arrows"?37:65)) { // left
-                that.move(obj,-1,0,null,type);
-            } else if (e.keyCode==(type=="arrows"?39:68)) {
-                that.move(obj,1,0,null,type);
-            } else if (e.keyCode==(type=="arrows"?38:87)) { // up
-                that.move(obj,0,-1,null,type);
-            } else if (e.keyCode==(type=="arrows"?40:83)) {
-                that.move(obj,0,1,null,type);
+            if (!that["keyCheck" + type]) return;
+            if (e.keyCode == (type == "arrows" ? 37 : 65)) { // left
+                that.move(obj, -1, 0, null, type);
+            } else if (e.keyCode == (type == "arrows" ? 39 : 68)) {
+                that.move(obj, 1, 0, null, type);
+            } else if (e.keyCode == (type == "arrows" ? 38 : 87)) { // up
+                that.move(obj, 0, -1, null, type);
+            } else if (e.keyCode == (type == "arrows" ? 40 : 83)) {
+                that.move(obj, 0, 1, null, type);
             }
-            that["keyCheck"+type] = false;
+            that["keyCheck" + type] = false;
         });
-        that["keyup"+type] = zimDefaultFrame.on("keyup", function () {
-            that["keyCheck"+type] = true;
+        that["keyup" + type] = zimDefaultFrame.on("keyup", function() {
+            that["keyCheck" + type] = true;
         });
         return that;
-    }
+    };
     this.removeKeys = function(type) {
         // removes either arrows or wasd keys
         if (zot(type)) type = "arrows";
         if (type != "arrows") type = "wasd";
-        that["keyOjbect"+type].boardKeyType = null;
-        that["keyOjbect"+type] = null;
-        that["keyFilter"+type] = null;
-        zimDefaultFrame.off("keydown", that["keydown"+type]);
-        zimDefaultFrame.off("keyup", that["keyup"+type]);
+        that["keyOjbect" + type].boardKeyType = null;
+        that["keyOjbect" + type] = null;
+        that["keyFilter" + type] = null;
+        zimDefaultFrame.off("keydown", that["keydown" + type]);
+        zimDefaultFrame.off("keyup", that["keyup" + type]);
         return that;
-    }
+    };
     this.showPath = function(path, time) {
         // shows path indicators for a path [{x:col, y:row}, {etc.}, {etc.}]
         if (zot(time)) time = 0;
         that.clearPath();
         var easy = (path && path[0] && !zot(path[0].x));
-        zim.loop(path, function (p, i) {
-            var t = that.getTile(easy?p.x:p[0], easy?p.y:p[1]);
+        zim.loop(path, function(p, i) {
+            var t = that.getTile(easy ? p.x : p[0], easy ? p.y : p[1]);
             if (!t) return;
-            if (time == 0) that.getTile(easy?p.x:p[0], easy?p.y:p[1]).indicator.alp(1);
-            else that.getTile(easy?p.x:p[0], easy?p.y:p[1]).indicator.animate({
-                props:{alpha:1},
-                time:time,
-                wait:i*time/10,
+            if (time == 0) that.getTile(easy ? p.x : p[0], easy ? p.y : p[1]).indicator.alp(1);
+            else that.getTile(easy ? p.x : p[0], easy ? p.y : p[1]).indicator.animate({
+                props: {alpha: 1},
+                time: time,
+                wait: i * time / 10,
             });
         });
         that.path = path;
         if (that.stage) that.stage.update();
         return that;
-    }
+    };
     this.clearPath = function() {
         // hides path indicators
         that.path = null;
@@ -1450,17 +1459,17 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
         });
         if (that.stage) that.stage.update();
         return that;
-    }
+    };
     this.followPath = function(obj, path, time, animation, buffer) {
         // animates object along a provided path [{x:col, y:row}, {etc.}, {etc.}]
-        if (zot(path) || path.length == 0) {obj.moving = false; return;}
+        if (zot(path) || path.length == 0) {obj.moving = false; return; }
         obj.boardPath = zim.copy(path);
-        if (zot(time)) time = timeType=="seconds"?.6:600;
-        if (zot(animation) || animate===true) animation = timeType=="seconds"?.3:300;
+        if (zot(time)) time = timeType == "seconds" ? .6 : 600;
+        if (zot(animation) || animate === true) animation = timeType == "seconds" ? .3 : 300;
         if (zot(buffer)) buffer = 0;
         obj.moving = true;
         that.moveObject = obj;
-        obj.boardIntervalObj = zim.interval(time, function (o) {
+        obj.boardIntervalObj = zim.interval(time, function(o) {
             var d = obj.boardPath[o.count];
             // BREAK
             var tile = that.getTile(d.x, d.y);
@@ -1473,15 +1482,21 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
                 var newRow = tile.boardRow;
             }
             if (animation && tile) {
+                var eve = new createjs.Event("movingstart");
+                if (obj.boardCol > newCol) eve.dir = "left";
+                else if (obj.boardCol < newCol) eve.dir = "right";
+                else if (obj.boardRow > newRow) eve.dir = "up";
+                else if (obj.boardRow < newRow) eve.dir = "down";
+                if (obj.dispatchEvent && obj.dispatchEvent) obj.dispatchEvent(eve);
                 obj.animate({
-                    props:{x:location.x, y:location.y},
-                    time:animation,
-                    call:function () {
+                    props: {x: location.x, y: location.y},
+                    time: animation,
+                    call: function() {
                         if (tile && buffer && buffer > 0) {
                             var left = (obj.boardCol > newCol && obj.boardCol <= buffer);
-                            var right = (obj.boardCol < newCol && cols-obj.boardCol-1 <= buffer);
+                            var right = (obj.boardCol < newCol && cols - obj.boardCol - 1 <= buffer);
                             var up = (obj.boardRow > newRow && obj.boardRow <= buffer);
-                            var down = (obj.boardRow < newRow && rows-obj.boardRow-1 <= buffer);
+                            var down = (obj.boardRow < newRow && rows - obj.boardRow - 1 <= buffer);
                         }
                         that.position(obj, d.x, d.y);
                         if (tile && buffer && buffer > 0) {
@@ -1496,17 +1511,17 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
                             obj.boardLastPath = obj.boardPath;
                             obj.boardPath = null;
                             that.clearPath();
-                            setTimeout(function () {
+                            setTimeout(function() {
                                 if (!obj.moving && obj.dispatchEvent && obj.dispatchEvent) obj.dispatchEvent("movingdone");
                             }, 500);
                         }
                     },
-                    events:true
+                    events: true
                 });
             } else {
                 // BREAK - seems to take off but not add back on?
                 that.position(obj, d.x, d.y);
-                if (o.count == o.total-1) {
+                if (o.count == o.total - 1) {
                     obj.moving = false;
                     obj.boardLastPath = obj.boardPath;
                     obj.boardPath = null;
@@ -1517,27 +1532,27 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
             }
         }, path.length, true);
         return that;
-    }
+    };
     this.stopFollowPath = function(obj) {
         // stops a path from next steps
         obj.moving = false;
         obj.boardIntervalObj.clear();
         return that;
-    }
+    };
     this.shiftPath = function(lastStartX, startX, lastStartY, startY, obj) {
         if (obj) {
             if (!obj.boardPath) return;
-            applyShift(-startX+lastStartX, -startY+lastStartY, obj);
+            applyShift(-startX + lastStartX, -startY + lastStartY, obj);
         } else {
-            that.pieces.loop(function (obj) {
+            that.pieces.loop(function(obj) {
                 if (!obj.boardPath) return;
-                applyShift(-startX+lastStartX, -startY+lastStartY, obj);
+                applyShift(-startX + lastStartX, -startY + lastStartY, obj);
             });
         }
         return that;
-    }
+    };
     function applyShift(difX, difY, obj) {
-        zim.loop(obj.boardPath, function (step) {
+        zim.loop(obj.boardPath, function(step) {
             if (difX) step.x = step.x + difX;
             if (difY) step.y = step.y + difY;
         });
@@ -1548,20 +1563,20 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
         if (typeof ZIMON == 'undefined') return;
         if (!that.pane) {
             var pane = that.pane = new zim.Pane({
-                container:that.stage,
-                width:Math.min(500, that.stage.width-20),
-                height:Math.min(500, that.stage.height-20),
-                draggable:true,
+                container: that.stage,
+                width: Math.min(500, that.stage.width - 20),
+                height: Math.min(500, that.stage.height - 20),
+                draggable: true,
             });
-            var textArea = that.textArea = new zim.TextArea(Math.min(400, that.stage.width-70), Math.min(400, that.stage.height-70));
+            var textArea = that.textArea = new zim.TextArea(Math.min(400, that.stage.width - 70), Math.min(400, that.stage.height - 70));
             textArea.tag.style.overflow = "auto";
             textArea.centerReg(pane);
         }
         that.textArea.text = "'" + ZIMON.stringify(that.info) + "'";
         that.pane.show();
         return that.textArea.text;
-    }
-}
+    };
+};
 zim.extend(zim.Board, zim.Container);
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
