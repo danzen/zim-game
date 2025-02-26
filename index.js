@@ -51,10 +51,10 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
     if (zot(spacing)) spacing = 10;
     if (zot(arrows)) arrows = false;
     if (!zot(borderColor) && zot(borderWidth)) borderWidth = 2;
-    if (zot(shadowColor)) shadowColor="rgba(0,0,0,.3)";
-    if (zot(shadowBlur)) shadowBlur=14;
-    if (zot(reverse)) reverse=false;
-    if (zot(allowZero)) allowZero=false;
+    if (zot(shadowColor)) shadowColor = "rgba(0,0,0,.3)";
+    if (zot(shadowBlur)) shadowBlur = 14;
+    if (zot(reverse)) reverse = false;
+    if (zot(allowZero)) allowZero = false;
     if (zot(font)) font = "courier";
     if (zot(fontSize)) fontSize = 60;
     if (zot(nameShift)) nameShift = 0;
@@ -65,11 +65,11 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
 
     var backing = this.backing = new zim.Rectangle(width, height, backgroundColor, borderColor, borderWidth, corner);
     backing.mouseEnabled = false;
-    var backingEvent = backing.on("click", function(){});
+    var backingEvent = backing.on("click", function() { });
     backing.off("click", backingEvent);
     backing.off("click", backingEvent);
     this.addChild(backing);
-    this.setBounds(0,0,width,height);
+    this.setBounds(0, 0, width, height);
     this.backdrop = new Rectangle(2000, 1000, "rgba(0,0,0,.01)").center(this, 0);
     if (typeof frame == "undefined" && typeof zimDefaultFrame != "undefined") {var frame = zimDefaultFrame;}
     var stage = frame.stage;
@@ -80,7 +80,7 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
         if (stage) stage.update();
     });
     this.filled = false;
-    this.info = {reverse:reverse, total:total, allowZero:allowZero, type:gameSaved}; // ES6 to fix
+    this.info = {reverse: reverse, total: total, allowZero: allowZero, type: gameSaved}; // ES6 to fix
     if (shadowColor != -1 && shadowBlur > 0) backing.shadow = new createjs.Shadow(shadowColor, 3, 3, shadowBlur);
 
     var grid = this.grid = new zim.Container();
@@ -105,10 +105,10 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
         scoreColor: zim.darker,
         currentScoreBackgroundColor: "#f0d2e8",
         currentScoreColor: zim.darker
-    }
+    };
     var c = zim.merge(c, colors);
 
-    var fakeText = zim.decimals(8,-scorePlaces,true); // force text to 000008 to start
+    var fakeText = zim.decimals(8, -scorePlaces, true); // force text to 000008 to start
     var winSteppers;
     var gameSaved;
     var button;
@@ -119,8 +119,8 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
     } else if (!Array.isArray(data)) { // data is a key to get the data from the ZIM Game Database
         that.dataSource = "database";
         that.key = data;
-        zim.async("https://zimjs.com/gamedata.php?id="+data, gameData);
-        function gameData(d){
+        zim.async("https://zimjs.com/gamedata.php?id=" + data, gameData);
+        function gameData(d) {
             if (d == "error") {
                 var e = new createjs.Event("error");
                 e.type = "data";
@@ -131,7 +131,7 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
             if (d == "noscores") {
                 d = [];
             }
-            data=d;
+            data = d;
             makeGrid();
         }
 
@@ -153,20 +153,20 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
 
     var keydownEvent;
 
-    function makeGrid() {			
+    function makeGrid() {
         scaleStart = that.scaleX;
         that.sca(1);
         that.filled = false;
         frame.off("keydown", keydownEvent);
         if (!zot(title)) {
             var titleText = that.titleText = new zim.Label({
-                text:title,
-                size:fontSize,
-                color:titleColor,
-                align:"center",
-                font:font
+                text: title,
+                size: fontSize,
+                color: titleColor,
+                align: "center",
+                font: font
             }).addTo(grid);
-            titleText.x = titleText.width/2;
+            titleText.x = titleText.width / 2;
             titleText.mouseEnabled = false;
         }
 
@@ -174,8 +174,8 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
         if (!zot(that.winner)) winSteppers = [];
         backing.mouseEnabled = false;
         backing.off("click", backingEvent);
-        for (var j=0; j<total; j++) {
-            winCheck = j==that.winner;
+        for (var j = 0; j < total; j++) {
+            winCheck = j == that.winner;
             var p, s;
             if (data[j]) {
                 p = data[j].player;
@@ -183,49 +183,50 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
             } else {
                 p = s = "   ";
             }
+
             row = new zim.Container();
             rank = new zim.Label({
-                text:(j+1),
-                size:50,
-                color:j==that.winner?c.currentRankColor:c.rankColor,
-                align:"center",
-                valign:"center",
-                backing:new zim.Rectangle(100,100,winCheck?c.currentRankBackgroundColor:c.rankBackgroundColor),
+                text: (j + 1),
+                size: 50,
+                color: j == that.winner ? c.currentRankColor : c.rankColor,
+                align: "center",
+                valign: "center",
+                backing: new zim.Rectangle(100, 100, winCheck ? c.currentRankBackgroundColor : c.rankBackgroundColor),
             });
-            rank.reg(-rank.width/2,-rank.height/2);
+            rank.reg(-rank.width / 2, -rank.height / 2);
             rank.label.regY = -rankShift;
             rank.addTo(row);
             if (arrows && !zot(that.winner)) {
-                rank.mov(0,j>=that.winner?50:0)
-                    .mov(0,j>that.winner?50:0)
+                rank.mov(0, j >= that.winner ? 50 : 0)
+                    .mov(0, j > that.winner ? 50 : 0);
             }
-            for (var i=0; i<3; i++) {
+            for (var i = 0; i < 3; i++) {
                 stepper = new zim.Stepper({
-                    list:winCheck?"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-*_".split(""):p[i],
-                    width:70,
-                    continuous:true,
-                    label:new zim.Label({text:"", font:font, color:j==that.winner?c.currentNameColor:c.nameColor, size:fontSize, align:"center", shiftV:-5-nameShift}),
-                    backgroundColor:winCheck?c.currentNameBackgroundColor:c.nameBackgroundColor,
-                    vertical:false,
-                    arrows:false,
-                    arrows2:(winCheck&&arrows),
-                    corner:0,
-                    shadowBlur:0
-                }).sca(100/60);
+                    list: winCheck ? "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-*_".split("") : p[i],
+                    width: 70,
+                    continuous: true,
+                    label: new zim.Label({text: "", font: font, color: j == that.winner ? c.currentNameColor : c.nameColor, size: fontSize, align: "center", shiftV: -5 - nameShift}),
+                    backgroundColor: winCheck ? c.currentNameBackgroundColor : c.nameBackgroundColor,
+                    vertical: false,
+                    arrows: false,
+                    arrows2: (winCheck && arrows),
+                    corner: 0,
+                    shadowBlur: 0
+                }).sca(100 / 60);
                 if (winCheck) {
                     backing.mouseEnabled = true;
                     backing.on("click", backingEvent);
                     if (frame.tabOrder) frame.tabOrder.push(stepper);
                     winSteppers.push(stepper);
                     stepper.currentValue = "_";
-                    stepper.on("change", function(e) {	
+                    stepper.on("change", function(e) {
                         if (e.target.text != "_") {
-                            e.target.label.y = 19-nameShift;
+                            e.target.label.y = 19 - nameShift;
                             e.target.stage.update();
-                        }						
+                        }
                         var done = zim.loop(winSteppers, function(s) {
                             if (s.currentValue == "_") return false;
-                        });		
+                        });
                         if (done) {
                             that.filled = true;
                             winScore.text = "";
@@ -234,51 +235,51 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
                         }
                         that.dispatchEvent("change");
                     });
-                    if (i==0) stepper.keyFocus = true;
+                    if (i == 0) stepper.keyFocus = true;
                 } else {
-                    stepper.label.y = 19-nameShift;
+                    stepper.label.y = 19 - nameShift;
                 }
                 // stepper.label.reg(0,-2-nameShift)
                 // stepper.label.mov(0,2+nameShift)
-                stepper.x = rank.width + spacing + i*(stepper.width+spacing);
+                stepper.x = rank.width + spacing + i * (stepper.width + spacing);
                 if (arrows && !zot(that.winner)) {
-                    stepper.mov(0,j>=that.winner?50:0).mov(0,j>that.winner?50:0);
+                    stepper.mov(0, j >= that.winner ? 50 : 0).mov(0, j > that.winner ? 50 : 0);
                 }
                 // stepper.enabled = winCheck;
                 row.addChild(stepper);
 
                 var scoreText = new zim.Label({
-                    text:fakeText,
-                    color:winCheck?c.currentScoreColor:c.scoreColor,
-                    font:font,
-                    size:fontSize+4,
-                    align:"right",
-                    valign:"center",
-                    backing:new zim.Rectangle(scoreWidth,100,winCheck?c.currentScoreBackgroundColor:c.scoreBackgroundColor)
+                    text: fakeText,
+                    color: winCheck ? c.currentScoreColor : c.scoreColor,
+                    font: font,
+                    size: fontSize + 4,
+                    align: "right",
+                    valign: "center",
+                    backing: new zim.Rectangle(scoreWidth, 100, winCheck ? c.currentScoreBackgroundColor : c.scoreBackgroundColor)
                 });
-                scoreText.text = scoreZeros?zim.decimals(s, -scorePlaces, true):s;
-                scoreText.reg(-scoreText.width/2,-scoreText.height/2)
+                scoreText.text = scoreZeros ? zim.decimals(s, -scorePlaces, true) : s;
+                scoreText.reg(-scoreText.width / 2, -scoreText.height / 2);
                 scoreText.label.regY = -4 - scoreShift;
                 scoreText.label.skewX = 10;
                 row.addChild(scoreText);
-                scoreText.x = rank.width + spacing + 3*(stepper.width+spacing)+60;
+                scoreText.x = rank.width + spacing + 3 * (stepper.width + spacing) + 60;
                 // scoreText.outline()
                 if (arrows && !zot(that.winner)) {
-                    scoreText.mov(0,j>=that.winner?50:0)
-                        .mov(0,j>that.winner?50:0);
+                    scoreText.mov(0, j >= that.winner ? 50 : 0)
+                        .mov(0, j > that.winner ? 50 : 0);
                 }
             }
             if (winCheck) {
                 winRow = row;
                 var winScore = scoreText;
                 button = that.button = new zim.Button({
-                    label:new zim.Label({text:"SAVE", size:50, align:"center", color:c.currentRankColor, rollColor:c.currentRankBackgroundColor}),
-                    width:scoreText.width,
-                    backgroundColor:c.currentRankBackgroundColor,
-                    rollBackgroundColor:c.currentRankColor,
-                    height:100,
-                    corner:0,
-                    shadowBlur:0
+                    label: new zim.Label({text: "SAVE", size: 50, align: "center", color: c.currentRankColor, rollColor: c.currentRankBackgroundColor}),
+                    width: scoreText.width,
+                    backgroundColor: c.currentRankBackgroundColor,
+                    rollBackgroundColor: c.currentRankColor,
+                    height: 100,
+                    corner: 0,
+                    shadowBlur: 0
                 });
                 // button.x = scoreText.x-60;
                 // button.y = scoreText.y;
@@ -293,14 +294,14 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
                     }
                 });
             }
-            row.addTo(grid)
+            row.addTo(grid);
             row.x = 0;
-            row.y = (zot(title)?0:(titleText.height + spacing*2)) + j*(100 + spacing);
+            row.y = (zot(title) ? 0 : (titleText.height + spacing * 2)) + j * (100 + spacing);
             row.mouseChildren = winCheck;
             row.mouseEnabled = winCheck;
 
         }
-        if (!zot(title)) {titleText.center(grid); titleText.y=0;}
+        if (!zot(title)) {titleText.center(grid); titleText.y = 0;}
         grid.scaleTo(that, 95, 95)
             .center(that);
         that.sca(scaleStart);
@@ -308,7 +309,7 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
     }
 
     this.submitScore = function() {
-        button.text = that.dataSource=="localStorage"?"LOCAL":"SENT";
+        button.text = that.dataSource == "localStorage" ? "LOCAL" : "SENT";
         winRow.mouseChildren = false;
         winRow.mouseEnbabled = false;
         that.stage.update();
@@ -324,46 +325,47 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
         if (that.dataSource == "custom") return;
         if (zim.decimals(score, null, null, null, null, null, e)) that.save();
         return that;
-    }
+    };
 
     this.score = function(score) {
-
+        
         if (!Array.isArray(data)) {
-            timeout(.1, function(){that.score(score)});
+            timeout(.1, function() {that.score(score);});
             return;
         }
-        
-        if (!zot(that.pendingIndex)) that.cancel();			
+
+        if (!zot(that.pendingIndex)) that.cancel();
 
         var position;
         if (data.length == 0) {
             position = 0;
             data.push({player: "", score: score});
         } else {
-			position = zim.loop(data, function(s, i) {
+            position = zim.loop(data, function(s, i) {
                 if ((!reverse && s.score <= score) || (reverse && s.score >= score)) {
-                    data.splice(i, 0, {player:"", score:score});
+                    data.splice(i, 0, {player: "", score: score});
                     return i;
                 }
             });
         }
-        if (position===true && (allowZero || score > 0) && (data.length == 0 || data.length < total)) {
-             data.push({player:"", score:score});
-             position = data.length-1;
+
+        if (position === true && (allowZero || score > 0) && (data.length == 0 || data.length < total)) {
+            data.push({player: "", score: score});
+            position = data.length - 1;
         }
-        if (position!==true) {
+        if (position !== true) {
             that.pendingIndex = position;
             that.redraw(null, position);
         }
-        return position!==true?position:null;
-    }
+        return position !== true ? position : null;
+    };
 
     this.save = function() {
-        if (zot(that.pendingIndex))  return that;
+        if (zot(that.pendingIndex)) return that;
         if (that.dataSource == "database") {
             var player = data[that.pendingIndex].player;
             var score = data[that.pendingIndex].score;
-            zim.async("https://zimjs.com/gamedata.php?id="+that.key+"&player="+player+"&score="+score+"&reverse="+reverse+"&total="+total+"&allowZero="+allowZero, gameSaved);
+            zim.async("https://zimjs.com/gamedata.php?id=" + that.key + "&player=" + player + "&score=" + score + "&reverse=" + reverse + "&total=" + total + "&allowZero=" + allowZero, gameSaved);
         }
         if (that.dataSource == "localStorage") {
             that.pendingIndex = null;
@@ -375,9 +377,9 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
             setTimeout(function() {that.redraw();}, 1500);
         }
         return that;
-    }
+    };
 
-    function gameSaved(d){
+    function gameSaved(d) {
         if (d == "error") {
             var e = new createjs.Event("error");
             e.type = "save";
@@ -396,14 +398,14 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
     }
 
     this.startTime = function() {
-        zim.async("https://zimjs.com/gamedata.php?id="+that.key+"&command=start", timeReply);
+        zim.async("https://zimjs.com/gamedata.php?id=" + that.key + "&command=start", timeReply);
         return that;
-    }
+    };
     this.stopTime = function() {
-        zim.async("https://zimjs.com/gamedata.php?id="+that.key+"&command=stop", timeReply);
+        zim.async("https://zimjs.com/gamedata.php?id=" + that.key + "&command=stop", timeReply);
         return that;
-    }
-    function timeReply(data){};
+    };
+    function timeReply(data) { };
 
     this.cancel = function() {
         if (zot(that.pendingIndex)) return that;
@@ -414,18 +416,18 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
         e.data = data;
         that.dispatchEvent(e);
         return that;
-    }
+    };
     var scaleStart = that.scaleX;
     this.redraw = function(newData, newWinner) {
         if (newData) data = newData;
         scaleStart = that.scaleX;
         that.dispose();
-        if (zot(newWinner)) {that.winner = null} else {that.winner = newWinner;}
+        if (zot(newWinner)) {that.winner = null;} else {that.winner = newWinner;}
         grid.removeAllChildren();
         makeGrid();
         if (that.stage) that.stage.update();
         return that;
-    }
+    };
 
     this.dispose = function() {
         if (winSteppers) {
@@ -443,8 +445,8 @@ zim.LeaderBoard = function(data, title, width, height, corner, backgroundColor, 
             }
             if (button) button.dispose();
         }
-    }
-}
+    };
+};
 zim.extend(zim.LeaderBoard, zim.Container);
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -464,12 +466,12 @@ zim.Meter = function(stage, vertical, horizontal, color, textColor, padding, dec
     if (zot(alpha)) alpha = .6;
     if (zot(skew)) skew = 10;
 
-    this.super_constructor("", 30, null, textColor, null, null, null, "center", "center", null, null, null, null, null, new zim.Rectangle(100,40,color));
+    this.super_constructor("", 30, null, textColor, null, null, null, "center", "center", null, null, null, null, null, new zim.Rectangle(100, 40, color));
     var that = this;
     var meterFunction;
     var initFunction;
     if (zot(stage)) {initFunction = that.on("added", init);} else {init();}
-    var fps = new zim.Label({text:"FPS", size:18, color:textColor}).rot(-90).addTo(that).alp(.5)
+    var fps = new zim.Label({text: "FPS", size: 18, color: textColor}).rot(-90).addTo(that).alp(.5);
     fps.x = 59;
     fps.y = 17;
     function init() {
@@ -496,11 +498,11 @@ zim.Meter = function(stage, vertical, horizontal, color, textColor, padding, dec
         // that.y = vertical=="top"?padding:stage.getBounds().height-that.height-padding;
         that.pos(padding, padding, horizontal, vertical);
         return that;
-    }
-    this.dispose = function () {
+    };
+    this.dispose = function() {
         zim.Ticker.remove(meterFunction);
-    }
-}
+    };
+};
 zim.extend(zim.Meter, zim.Label);
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1016,7 +1018,7 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
     };
     tiles.loop(function(t) {
         if (indicatorType == "circle") {
-            t.indicator = new Circle(zik(indicatorSize), zik(indicatorColor), zik(indicatorBorderColor), indicatorBorderWidth).center(t).alp(0);
+            t.indicator = new zim.Circle(zik(indicatorSize), zik(indicatorColor), zik(indicatorBorderColor), indicatorBorderWidth).center(t).alp(0);
         } else {
             var size = zik(indicatorSize);
             t.indicator = new zim.Rectangle(size, size, zik(indicatorColor), zik(indicatorBorderColor), indicatorBorderWidth).centerReg(t).alp(0);
@@ -1588,7 +1590,7 @@ zim.Person = function(shirt, pants, head, outline, player, cache) {
     this.arguments = arguments;
 
     var colors = zim.shuffle([zim.pink, zim.blue, zim.yellow, zim.green, zim.tin, zim.light, zim.purple, zim.orange]);
-    var heads = zim.shuffle([zim.brown, "peru", "saddlebrown", "sandybrown", "wheat", "bisque", "rosybrown", "tan"])
+    var heads = zim.shuffle([zim.brown, "peru", "saddlebrown", "sandybrown", "wheat", "bisque", "rosybrown", "tan"]);
     if (zot(shirt)) shirt = colors[0];
     if (zot(pants)) pants = colors[1];
     if (zot(head)) head = heads[0];
@@ -1599,16 +1601,16 @@ zim.Person = function(shirt, pants, head, outline, player, cache) {
     pants = zik(pants);
     head = zik(head);
     this.super_constructor();
-    this.type = player?"Me":"Person";
-    var feet = new zim.Circle(12, pants).sca(1,.5).addTo(this);
-    this.centerReg(null,null,false).mov(0,80-25/.707); // 45 degee shadow
-    var myBot = new zim.Rectangle(24,18,pants).loc(-12,-18,this);
-    var myBelt = new zim.Circle(12, shirt, "rgba(0,0,0,.3)",2).sca(1,.5).loc(0,-18,this);
-    var myTop = new zim.Rectangle(24,10,shirt).loc(-12,-28,this);
-    var myNeck = new zim.Circle(12, shirt).sca(1,.5).loc(0,-28,this);
-    var myHead = new zim.Circle(12, head, outline).loc(0,-40,this);
-    if (cache) this.cache(-this.width/2-2,-this.height,this.width+4,this.height+10);
-}
+    this.type = player ? "Me" : "Person";
+    var feet = new zim.Circle(12, pants).sca(1, .5).addTo(this);
+    this.centerReg(null, null, false).mov(0, 80 - 25 / .707); // 45 degee shadow
+    var myBot = new zim.Rectangle(24, 18, pants).loc(-12, -18, this);
+    var myBelt = new zim.Circle(12, shirt, "rgba(0,0,0,.3)", 2).sca(1, .5).loc(0, -18, this);
+    var myTop = new zim.Rectangle(24, 10, shirt).loc(-12, -28, this);
+    var myNeck = new zim.Circle(12, shirt).sca(1, .5).loc(0, -28, this);
+    var myHead = new zim.Circle(12, head, outline).loc(0, -40, this);
+    if (cache) this.cache(-this.width / 2 - 2, -this.height, this.width + 4, this.height + 10);
+};
 zim.extend(zim.Person, zim.Container);
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1638,6 +1640,7 @@ zim.Orb = function(radius, color, color2, accentColor, accentColor2, flat, alpha
     accentColor2 = zik(accentColor2);
 
     var that = this;
+
 
     if (flat) {
         that.circle = new zim.Circle(radius, color, accentColor)
@@ -1700,14 +1703,14 @@ zim.Tree = function(cache) {
 
     this.super_constructor();
     this.type = "Tree";
-    var roots = new zim.Circle(10, zim.brown).sca(1,.5).addTo(this);
-    this.centerReg(null,null,false);
-    var trunk = new zim.Rectangle(20,50,zim.brown).loc(-10,-50,this);
-    var leaves1 = new zim.Circle(zim.rand(35,45), zim.green).sca(1,.65).loc(0,-50,this);
-    var leaves2 = new zim.Circle(zim.rand(20,30), zim.green).sca(1,1).loc(-5,-70,this);
-    var leaves3 = new zim.Circle(zim.rand(15,20), zim.green).sca(1,1).loc(12,-72,this);
+    var roots = new zim.Circle(10, zim.brown).sca(1, .5).addTo(this);
+    this.centerReg(null, null, false);
+    var trunk = new zim.Rectangle(20, 50, zim.brown).loc(-10, -50, this);
+    var leaves1 = new zim.Circle(zim.rand(35, 45), zim.green).sca(1, .65).loc(0, -50, this);
+    var leaves2 = new zim.Circle(zim.rand(20, 30), zim.green).sca(1, 1).loc(-5, -70, this);
+    var leaves3 = new zim.Circle(zim.rand(15, 20), zim.green).sca(1, 1).loc(12, -72, this);
     if (cache) this.cache();
-}
+};
 zim.extend(zim.Tree, zim.Container);
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1731,8 +1734,8 @@ zim.Timer = function(time, step, colon, down, isometric, startPaused, size, font
     if (zot(borderColor)) borderColor = null;
     if (zot(borderWidth)) borderWidth = null;
     if (borderColor < 0 || borderWidth < 0) borderColor = borderWidth = null;
-    else if (borderColor!=null && borderWidth==null) borderWidth = 1;
-    this.zimLabel_constructor(colon?zim.decimals(time/60,2,2,1,null,true):time, size, font, color, null, null, null, align, valign, null, null, bold, italic, variant, new zim.Rectangle(width, height, backgroundColor, borderColor, borderWidth).centerReg({add:false}));
+    else if (borderColor != null && borderWidth == null) borderWidth = 1;
+    this.zimLabel_constructor(colon ? zim.decimals(time / 60, 2, 2, 1, null, true) : time, size, font, color, null, null, null, align, valign, null, null, bold, italic, variant, new zim.Rectangle(width, height, backgroundColor, borderColor, borderWidth).centerReg({add: false}));
     this.type = "Timer";
     var that = this;
     that.totalTime = time;
@@ -1746,12 +1749,12 @@ zim.Timer = function(time, step, colon, down, isometric, startPaused, size, font
             if (isometric) {
                 if (isometric == true) isometric = "left";
                 if (isometric == "left") {
-                    that.ske(0,-26.5);
+                    that.ske(0, -26.5);
                 } else {
-                    that.ske(0,26.5);
+                    that.ske(0, 26.5);
                 }
             } else {
-                that.ske(0,0);
+                that.ske(0, 0);
             }
         }
     });
@@ -1761,7 +1764,7 @@ zim.Timer = function(time, step, colon, down, isometric, startPaused, size, font
             return paused;
         },
         set: function(value) {
-            if (value==paused) return;
+            if (value == paused) return;
             that.pause(value);
         }
     });
@@ -1772,28 +1775,28 @@ zim.Timer = function(time, step, colon, down, isometric, startPaused, size, font
         },
         set: function(value) {
             time = value;
-            if (colon) that.text = zim.decimals(time/60,2,2,1,null,true);
-            else that.text = zim.decimals(value, zot(decimals)?1:decimals, step%1000==0?0:zot(decimals)?1:decimals, null, false);
+            if (colon) that.text = zim.decimals(time / 60, 2, 2, 1, null, true);
+            else that.text = zim.decimals(value, zot(decimals) ? 1 : decimals, step % 1000 == 0 ? 0 : zot(decimals) ? 1 : decimals, null, false);
         }
     });
     this.start = function(t) {
         if (!zot(t)) that.time = t;
         paused = false;
         clearInterval(that.intervalID);
-        that.intervalID = setInterval(function () {
-            that.time += down?-step/1000:step/1000;
+        that.intervalID = setInterval(function() {
+            that.time += down ? -step / 1000 : step / 1000;
             if (down && that.time <= 0) {
                 that.time = 0;
                 clearInterval(that.intervalID);
             }
-            if (colon) that.text = zim.decimals(that.time/60,2,2,1,null,true);
-            else that.text = zim.decimals(that.time, zot(decimals)?1:decimals, step%1000==0?0:zot(decimals)?1:decimals, null, false);
+            if (colon) that.text = zim.decimals(that.time / 60, 2, 2, 1, null, true);
+            else that.text = zim.decimals(that.time, zot(decimals) ? 1 : decimals, step % 1000 == 0 ? 0 : zot(decimals) ? 1 : decimals, null, false);
             that.dispatchEvent("step");
             if (down && that.time <= 0) that.dispatchEvent("complete");
             if (that.stage) that.stage.update();
         }, step);
         return that;
-    }
+    };
     if (!startPaused) this.start();
 
     this.pause = function(state) {
@@ -1805,20 +1808,20 @@ zim.Timer = function(time, step, colon, down, isometric, startPaused, size, font
             that.start(that.time);
         }
         return that;
-    }
+    };
 
     this.stop = function() {
         clearInterval(that.intervalID);
         paused = null;
         return that;
-    }
+    };
 
-    this.dispose = function(a,b,disposing) {
+    this.dispose = function(a, b, disposing) {
         if (that.intervalID) clearInterval(that.intervalID);
-        if (!disposing) this.zimLabel_dispose(true); 
-    }        
+        if (!disposing) this.zimLabel_dispose(true);
+    };
 
-}
+};
 zim.extend(zim.Timer, zim.Label, ["dispose"], "zimLabel", false);
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1839,8 +1842,8 @@ zim.Scorer = function(score, isometric, size, font, color, backgroundColor, bord
     if (zot(borderColor)) borderColor = null;
     if (zot(borderWidth)) borderWidth = null;
     if (borderColor < 0 || borderWidth < 0) borderColor = borderWidth = null;
-    else if (borderColor!=null && borderWidth==null) borderWidth = 1;
-    this.super_constructor(score, size, font, color, null, null, null, align, valign, null, null, bold, italic, variant, new zim.Rectangle(width, height, backgroundColor, borderColor, borderWidth).centerReg({add:false}));
+    else if (borderColor != null && borderWidth == null) borderWidth = 1;
+    this.super_constructor(score, size, font, color, null, null, null, align, valign, null, null, bold, italic, variant, new zim.Rectangle(width, height, backgroundColor, borderColor, borderWidth).centerReg({add: false}));
     this.type = "Scorer";
     var that = this;
     // if (isometric == "right" || isometric == true) that.reg(that.getBounds().width);
@@ -1853,12 +1856,12 @@ zim.Scorer = function(score, isometric, size, font, color, backgroundColor, bord
             if (isometric == true) isometric = "right";
             if (isometric) {
                 if (isometric == "left") {
-                    that.ske(0,-26.5);
+                    that.ske(0, -26.5);
                 } else {
-                    that.ske(0,26.5);
+                    that.ske(0, 26.5);
                 }
             } else {
-                that.ske(0,0);
+                that.ske(0, 0);
             }
         }
     });
@@ -1872,19 +1875,19 @@ zim.Scorer = function(score, isometric, size, font, color, backgroundColor, bord
             if (that.stage) that.stage.update();
         }
     });
-}
+};
 zim.extend(zim.Scorer, zim.Label);
-        
-zim.Dialog = function(width, height, words, dialogType, tailType, fill, size, font, color, backgroundColor, borderColor, borderWidth, align, valign, corner, shadowColor, shadowBlur, padding, paddingH, paddingV, shiftH, shiftV, slantLeft, slantRight, slantTop, slantBottom, tailH, tailV, tailShiftH, tailShiftV, tailShiftAngle, arrows, arrowsInside, arrowsFlip, selectedIndex) {
-    var sig = "width, height, words, dialogType, tailType, fill, size, font, color, backgroundColor, borderColor, borderWidth, align, valign, corner, shadowColor, shadowBlur, padding, paddingH, paddingV, shiftH, shiftV, slantLeft, slantRight, slantTop, slantBottom, tailH, tailV, tailShiftH, tailShiftV, tailShiftAngle, arrows, arrowsInside, arrowsFlip, selectedIndex";
+
+zim.Dialog = function(width, height, words, dialogType, tailType, fill, size, font, color, backgroundColor, borderColor, borderWidth, align, valign, corner, shadowColor, shadowBlur, padding, paddingH, paddingV, shiftH, shiftV, slantLeft, slantRight, slantTop, slantBottom, tailH, tailV, tailShiftH, tailShiftV, tailShiftAngle, arrows, arrowsInside, arrowsFlip, index, selectedIndex) {
+    var sig = "width, height, words, dialogType, tailType, fill, size, font, color, backgroundColor, borderColor, borderWidth, align, valign, corner, shadowColor, shadowBlur, padding, paddingH, paddingV, shiftH, shiftV, slantLeft, slantRight, slantTop, slantBottom, tailH, tailV, tailShiftH, tailShiftV, tailShiftAngle, arrows, arrowsInside, arrowsFlip, index, selectedIndex";
     var duo; if (duo = zob(Dialog, arguments, sig, this)) return duo;
-            
+
     if (zot(width)) width = 300;
-    if (zot(height)) height = 200;      
-    if (zot(dialogType)) dialogType = "slant";           
+    if (zot(height)) height = 200;
+    if (zot(dialogType)) dialogType = "slant";
     if (zot(tailType)) tailType = "triangle";
     if (tailType == false) tailType = "none";
-    if (tailType!="circles"&&tailType!="line"&&tailType!="none") tailType="triangle";        
+    if (tailType != "circles" && tailType != "line" && tailType != "none") tailType = "triangle";
     if (zot(tailH)) tailH = "left";
     if (zot(tailV)) tailV = "bottom";
     if (zot(tailShiftH)) tailShiftH = 0;
@@ -1893,11 +1896,11 @@ zim.Dialog = function(width, height, words, dialogType, tailType, fill, size, fo
     if (zot(slantLeft)) slantLeft = -10;
     if (zot(slantRight)) slantRight = 10;
     if (zot(slantTop)) slantTop = -10;
-    if (zot(slantBottom)) slantBottom = 10;          
-    if (zot(fill)) fill = tailType!="none"; 
-    if (zot(size)) size = 40; 
+    if (zot(slantBottom)) slantBottom = 10;
+    if (zot(fill)) fill = tailType != "none";
+    if (zot(size)) size = 40;
     if (zot(words)) words = ["Hello!"];
-    if (!Array.isArray(words)) words = [words];                
+    if (!Array.isArray(words)) words = [words];
     if (zot(corner)) corner = 0;
     if (zot(shadowColor)) shadowColor = "rgba(0,0,0,.3)";
     if (zot(shadowBlur)) shadowBlur = 10;
@@ -1909,245 +1912,255 @@ zim.Dialog = function(width, height, words, dialogType, tailType, fill, size, fo
     if (zot(backgroundColor)) backgroundColor = zim.lighter;
     if (zot(borderColor)) borderColor = zim.dark;
     if (zot(borderWidth)) borderWidth = 3;
-    if (borderColor==-1) borderWidth = 0;   
-    if (zot(align)) align = "center";    
-    if (zot(valign)) valign = "center";    
+    if (borderColor == -1) borderWidth = 0;
+    if (zot(align)) align = "center";
+    if (zot(valign)) valign = "center";
     if (zot(arrows)) arrows = true;
     if (zot(arrowsInside)) arrowsInside = false;
     if (zot(arrowsFlip)) arrowsFlip = false;
-    if (zot(selectedIndex)) selectedIndex = 0;
-    
+    if (!zot(selectedIndex) && zot(index)) index = selectedIndex; 
+    if (zot(index) && zot(selectedIndex)) index = 0;
+
     var that = this;
-    that.words = words;       
-    
+    that.words = words;
+
     function makeSlant(width, height, backgroundColor) {
-        var b = new zim.Shape(width, height);                          
-        var adjustX = [slantLeft,slantRight,-slantRight,-slantLeft];
-        var adjustY = [-slantTop,slantTop,slantBottom,-slantBottom];
+        var b = new zim.Shape(width, height);
+        var adjustX = [slantLeft, slantRight, -slantRight, -slantLeft];
+        var adjustY = [-slantTop, slantTop, slantBottom, -slantBottom];
         b.colorCommand = b.f(backgroundColor).command;
-        b.mt(0+adjustX[0],0+adjustY[0]).lt(width+adjustX[1],0+adjustY[1]).lt(width+adjustX[2],height+adjustY[2]).lt(0+adjustX[3],height+adjustY[3]).cp();
+        b.mt(0 + adjustX[0], 0 + adjustY[0]).lt(width + adjustX[1], 0 + adjustY[1]).lt(width + adjustX[2], height + adjustY[2]).lt(0 + adjustX[3], height + adjustY[3]).cp();
         return b;
     }
-    
-    that.zimContainer_constructor(width,height);
+
+    that.zimContainer_constructor(width, height);
     var bc = that.backingContainer = new zim.Container(width, height).addTo(that);
     if (dialogType == "slant") {
         this.backing = makeSlant(width, height, backgroundColor)
-            .addTo(bc);  
+            .addTo(bc);
     } else if (dialogType == "rectangle") {
         this.backing = new zim.Rectangle(width, height, backgroundColor, null, null, corner)
             .addTo(bc);
     } else if (dialogType == "poly") {
-        this.backing = new zim.Poly(Math.max(width,height)/2, 12, .4, backgroundColor, null, null)
+        this.backing = new zim.Poly(Math.max(width, height) / 2, 12, .4, backgroundColor, null, null)
             .sca(1.3)
             .center(bc);
     } else {
-        this.backing = new zim.Circle(200, backgroundColor, null, null, null, null, null, {ignoreScale:true})
+        this.backing = new zim.Circle(200, backgroundColor, null, null, null, null, null, {ignoreScale: true})
             .siz(width, height)
             .center(bc);
-    }       
-    
-    that.prev = function() {
-        if (selectedIndex==0) return;
-        that.selectedIndex--;  
-        that.dispatchEvent("change"); 
-        return that;         
     }
-    that.next = function() {
-        if (selectedIndex==words.length-1) return;
-        that.selectedIndex++;  
+
+    that.prev = function() {
+        if (index == 0) return;
+        that.index--;
         that.dispatchEvent("change");
         return that;
-    }
+    };
+    that.next = function() {
+        if (index == words.length - 1) return;
+        that.index++;
+        that.dispatchEvent("change");
+        return that;
+    };
     function makeArrows() {
         if (arrows && that.words.length > 1 && !that.arrows) {
             that.arrows = new Container(width, height).centerReg(that);
-            that.arrowNext = new zim.Arrow(borderWidth>0?borderColor:backgroundColor, borderWidth>0?borderColor.lighten(.2):backgroundColor.lighten(.2)).sca(.8).pos(arrowsInside?25:-40,(dialogType=="oval"||dialogType=="poly")?0:20,RIGHT,(dialogType=="oval"||dialogType=="poly")?CENTER:arrowsFlip?TOP:BOTTOM,that.arrows).expand();
-            that.arrowPrev = new zim.Arrow(borderWidth>0?borderColor:backgroundColor, borderWidth>0?borderColor.lighten(.2):backgroundColor.lighten(.2)).rot(180).sca(.8).pos(arrowsInside?25:-40,(dialogType=="oval"||dialogType=="poly")?0:20,LEFT,(dialogType=="oval"||dialogType=="poly")?CENTER:arrowsFlip?TOP:BOTTOM,that.arrows).expand();
+            that.arrowNext = new zim.Arrow(borderWidth > 0 ? borderColor : backgroundColor, borderWidth > 0 ? borderColor.lighten(.2) : backgroundColor.lighten(.2)).sca(.8).pos(arrowsInside ? 25 : -40, (dialogType == "oval" || dialogType == "poly") ? 0 : 20, RIGHT, (dialogType == "oval" || dialogType == "poly") ? CENTER : arrowsFlip ? TOP : BOTTOM, that.arrows).expand();
+            that.arrowPrev = new zim.Arrow(borderWidth > 0 ? borderColor : backgroundColor, borderWidth > 0 ? borderColor.lighten(.2) : backgroundColor.lighten(.2)).rot(180).sca(.8).pos(arrowsInside ? 25 : -40, (dialogType == "oval" || dialogType == "poly") ? 0 : 20, LEFT, (dialogType == "oval" || dialogType == "poly") ? CENTER : arrowsFlip ? TOP : BOTTOM, that.arrows).expand();
             setArrows();
             if (arrowsFlip) that.arrows.rot(180);
-            that.arrowNEvent = that.arrowNext.on("mousedown", that.next);      
-            that.arrowPEvent = that.arrowPrev.on("mousedown", that.prev);            
-        }    
-        return that;  
+            that.arrowNEvent = that.arrowNext.on("mousedown", that.next);
+            that.arrowPEvent = that.arrowPrev.on("mousedown", that.prev);
+        }
+        return that;
     }
-    makeArrows();     
-    
+    makeArrows();
+
     that.setWords = function(w, index) {
-        if (zot(index)) selectedIndex = 0;
+        if (zot(index)) index = 0;
         that.labels = [];
         if (!Array.isArray(w)) w = [w];
         that.words = words = w;
-        zim.loop(words, function(word,i) {
-            that.labels[i]=new zim.Label({
-                text:word,
-                labelWidth:Math.max(10, width-paddingH*2),
-                labelHeight:fill?Math.max(10,(height-paddingV*2)):null,
-                color:color,
-                font:font,
-                size:size,
-                align:align,
-                valign:valign
+        zim.loop(words, function(word, i) {
+            that.labels[i] = new zim.Label({
+                text: word,
+                labelWidth: Math.max(10, width - paddingH * 2),
+                labelHeight: fill ? Math.max(10, (height - paddingV * 2)) : null,
+                color: color,
+                font: font,
+                size: size,
+                align: align,
+                valign: valign
             });
         });
-        if (selectedIndex > that.labels.length-1) selectedIndex = that.labels.length-1;
+        if (index > that.labels.length - 1) index = that.labels.length - 1;
         if (that.label) that.label.removeFrom();
-        that.label = that.labels[selectedIndex].pos(align!="center"?paddingH:0,valign!="center"?paddingV:0,align,valign,that);
+        that.label = that.labels[index].pos(align != "center" ? paddingH : 0, valign != "center" ? paddingV : 0, align, valign, that);
         makeArrows();
-        if (that.arrowNext) setArrows();            
-        if (that.stage) that.stage.update()
+        if (that.arrowNext) setArrows();
+        if (that.stage) that.stage.update();
         return that;
-    }
-    that.setWords(words, selectedIndex);        
+    };
+    that.setWords(words, index);
 
     if (valign == "top") this.label.pos(null, paddingV, null, "top");
     else if (valign == "bottom") this.label.pos(null, paddingV, null, "bottom");
     if (shiftH) this.label.mov(shiftH);
     if (shiftV) this.label.mov(null, shiftV);
-    
-    if (tailType == "triangle") {            
-        that.tail = new zim.Triangle(200,200,90,backgroundColor,borderColor,borderWidth);                
+
+    if (tailType == "triangle") {
+        that.tail = new zim.Triangle(200, 200, 90, backgroundColor, borderColor, borderWidth);
     } else if (tailType == "line") {
-        that.tail = new zim.Line(100,borderWidth>0?borderWidth:5,borderWidth>0?borderColor:backgroundColor);
+        that.tail = new zim.Line(100, borderWidth > 0 ? borderWidth : 5, borderWidth > 0 ? borderColor : backgroundColor);
     } else if (tailType == "circles") {
         that.tail = new zim.Container(90, 50);
-        new zim.Circle(25, backgroundColor, borderColor, borderWidth).pos(0,0,"left","center",that.tail);
-        new zim.Circle(15, backgroundColor, borderColor, borderWidth).pos(0,0,"right","center",that.tail);
-    }    
-    if (tailH == "center" && tailV == "center") tailType = "none"; 
-    var tp = {
-        triangle:{
-            leftbottom:[5,-120,120],
-            lefttop:[-50,-80,-145],
-            rightbottom:[-50,-90,35],
-            righttop:[-10,-130,-55],
-            
-            centertop:[-16,-70,-104],
-            centerbottom:[16,-70,76],
-            leftcenter:[-70,23,167],
-            rightcenter:[-70,-18,-13]
-        },
-        line:{
-            leftbottom:[5,-58,130],
-            lefttop:[-40,-60,-140],
-            rightbottom:[5,-70,45],
-            righttop:[-10,-70,-45],
-            
-            centertop:[0,-70,90],
-            centerbottom:[0,-70,90],
-            leftcenter:[-70,0,0],
-            rightcenter:[-70,0,0]
-        },
-        circles:{
-            leftbottom:[5,-58,130],
-            lefttop:[-10,-60,-140],
-            rightbottom:[5,-70,45],
-            righttop:[-10,-70,-45],
-            
-            centertop:[0,-70,-90],
-            centerbottom:[0,-70,90],
-            leftcenter:[-70,0,180],
-            rightcenter:[-70,0,0]
-        }
+        new zim.Circle(25, backgroundColor, borderColor, borderWidth).pos(0, 0, "left", "center", that.tail);
+        new zim.Circle(15, backgroundColor, borderColor, borderWidth).pos(0, 0, "right", "center", that.tail);
     }
+    if (tailH == "center" && tailV == "center") tailType = "none";
+    var tp = {
+        triangle: {
+            leftbottom: [5, -120, 120],
+            lefttop: [-50, -80, -145],
+            rightbottom: [-50, -90, 35],
+            righttop: [-10, -130, -55],
+
+            centertop: [-16, -70, -104],
+            centerbottom: [16, -70, 76],
+            leftcenter: [-70, 23, 167],
+            rightcenter: [-70, -18, -13]
+        },
+        line: {
+            leftbottom: [5, -58, 130],
+            lefttop: [-40, -60, -140],
+            rightbottom: [5, -70, 45],
+            righttop: [-10, -70, -45],
+
+            centertop: [0, -70, 90],
+            centerbottom: [0, -70, 90],
+            leftcenter: [-70, 0, 0],
+            rightcenter: [-70, 0, 0]
+        },
+        circles: {
+            leftbottom: [5, -58, 130],
+            lefttop: [-10, -60, -140],
+            rightbottom: [5, -70, 45],
+            righttop: [-10, -70, -45],
+
+            centertop: [0, -70, -90],
+            centerbottom: [0, -70, 90],
+            leftcenter: [-70, 0, 180],
+            rightcenter: [-70, 0, 0]
+        }
+    };
     if (tailType != "none") {
-        var td = tp[tailType][tailH+tailV]; 
+        var td = tp[tailType][tailH + tailV];
         that.tail
             .rot(td[2])
-            .pos(td[0],td[1],tailH,tailV,bc,0)
-            .mov(tailShiftH, tailShiftV).rot(that.tail.rotation+tailShiftAngle);
+            .pos(td[0], td[1], tailH, tailV, bc, 0)
+            .mov(tailShiftH, tailShiftV).rot(that.tail.rotation + tailShiftAngle);
     }
-    
+
     if (borderWidth > 0 || (borderColor && borderColor != -1)) {
         if (dialogType == "slant") {
-            that.backingBorder = makeSlant(width+borderWidth*2, height+borderWidth*2, borderColor)
-                .addTo(bc,0).mov(-borderWidth, -borderWidth);  
+            that.backingBorder = makeSlant(width + borderWidth * 2, height + borderWidth * 2, borderColor)
+                .addTo(bc, 0).mov(-borderWidth, -borderWidth);
         } else {
-            that.backingBorder = this.backing.clone().addTo(bc,0).mov(-borderWidth, -borderWidth)
-                .siz(this.backing.width+borderWidth*2, this.backing.height+borderWidth*2)
-            if (dialogType=="poly") that.backingBorder.sca(1.3+borderWidth/50);
-            that.backingBorder.center(bc,0);
+            that.backingBorder = this.backing.clone().addTo(bc, 0).mov(-borderWidth, -borderWidth)
+                .siz(this.backing.width + borderWidth * 2, this.backing.height + borderWidth * 2);
+            if (dialogType == "poly") that.backingBorder.sca(1.3 + borderWidth / 50);
+            that.backingBorder.center(bc, 0);
             that.backingBorder.color = borderColor;
         }
     }
-            
+
     if (shadowColor && shadowColor != -1) {
-        that.underBacking = new zim.Container(width,height).addTo(bc,0);
+        that.underBacking = new zim.Container(width, height).addTo(bc, 0);
         var clone = that.backing.clone().addTo(that.underBacking);
         clone.borderColor = zim.clear;
         if (that.tail) {
             var bt = that.tail.clone().addTo(that.underBacking);
             bt.borderColor = zim.clear;
         }
-        that.underBacking.cache(-1000,-1000,2000,2000).sha(shadowColor, 10, 10, shadowBlur);
+        that.underBacking.cache(-1000, -1000, 2000, 2000).sha(shadowColor, 10, 10, shadowBlur);
     }
-    
+
     function setArrows() {
         if (!that.arrowPrev) return;
-        if (words.length==0) {
+        if (words.length == 0) {
             that.arrowPrev.vis(false);
             that.arrowNext.vis(false);
         }
-        if (selectedIndex==0) that.arrowPrev.vis(false) 
+        if (index == 0) that.arrowPrev.vis(false);
         else that.arrowPrev.vis(true);
-        if (selectedIndex==words.length-1) that.arrowNext.vis(false);
+        if (index == words.length - 1) that.arrowNext.vis(false);
         else that.arrowNext.vis(true);
     }
-    
-    bc.resetBounds(null,null,null,null,borderWidth+10+(shadowColor!=-1 && shadowBlur!=-1?50:0));
-    
-    Object.defineProperty(this, 'selectedIndex', {
+
+    bc.resetBounds(null, null, null, null, borderWidth + 10 + (shadowColor != -1 && shadowBlur != -1 ? 50 : 0));
+
+    Object.defineProperty(this, 'index', {
         get: function() {
-            return selectedIndex;
+            return index;
         },
         set: function(value) {
             that.label.removeFrom();
-            selectedIndex = constrain(Math.floor(value), 0, words.length-1);
-            that.label=that.labels[selectedIndex].pos(align!="center"?paddingH:0,valign!="center"?paddingV:0,align,valign,that);
+            index = constrain(Math.floor(value), 0, words.length - 1);
+            that.label = that.labels[index].pos(align != "center" ? paddingH : 0, valign != "center" ? paddingV : 0, align, valign, that);
             setArrows();
             if (that.stage) that.stage.update();
         }
     });
-    
+
+    Object.defineProperty(this, 'selectedIndex', {
+        get: function() {
+            return this.index;
+        },
+        set: function(value) {
+            this.index = value;
+        }
+    });
+
     Object.defineProperty(this, 'length', {
         get: function() {
             return words.length;
         },
         set: function(value) {
-            
+
         }
     });
-    
+
     Object.defineProperty(this, 'color', {
         get: function() {
             return color;
         },
         set: function(value) {
             color = value;
-            zim.loop(that.labels, function (label) {
+            zim.loop(that.labels, function(label) {
                 label.color = value;
             });
         }
     });
-    
+
     Object.defineProperty(this, 'backgroundColor', {
         get: function() {
             return backgroundColor;
         },
-        set: function(value) {                
+        set: function(value) {
             backgroundColor = value;
-            if (dialogType=="slant") that.backing.colorCommand.style = value;
+            if (dialogType == "slant") that.backing.colorCommand.style = value;
             else that.backing.color = value;
-            if (tailType == "triangle" || tailType == "line") { 
-                that.tail.color = value;  
+            if (tailType == "triangle" || tailType == "line") {
+                that.tail.color = value;
             } else if (tailType == "circles") {
-                that.tail.loop(function (tail) {
+                that.tail.loop(function(tail) {
                     tail.color = value;
-                });                    
-            }    
+                });
+            }
         }
     });
-    
+
     Object.defineProperty(this, 'borderColor', {
         get: function() {
             return borderColor;
@@ -2155,30 +2168,30 @@ zim.Dialog = function(width, height, words, dialogType, tailType, fill, size, fo
         set: function(value) {
             if (!that.backingBorder) return; // must start with border
             borderColor = value;
-            if (dialogType=="slant" && that.backingBorder) that.backingBorder.colorCommand.style = value;
+            if (dialogType == "slant" && that.backingBorder) that.backingBorder.colorCommand.style = value;
             else that.backing.borderColor = value;
-            if (tailType == "triangle" || tailType == "line") { 
-                that.tail.borderColor = value;  
+            if (tailType == "triangle" || tailType == "line") {
+                that.tail.borderColor = value;
             } else if (tailType == "circles") {
-                that.tail.loop(function (tail) {
+                that.tail.loop(function(tail) {
                     tail.borderColor = value;
-                });                    
-            }    
+                });
+            }
         }
     });
-    
+
     this.clone = function() {
-        return that.cloneProps(new zim.Dialog(width, height, that.words, dialogType, tailType, fill, size, font, color, backgroundColor, borderColor, borderWidth, align, valign, corner, shadowColor, shadowBlur, padding, paddingH, paddingV, shiftH, shiftV, slantLeft, slantRight, slantTop, slantBottom, tailH, tailV, tailShiftH, tailShiftV, tailShiftAngle, arrows, arrowsInside, arrowsFlip, selectedIndex));
+        return that.cloneProps(new zim.Dialog(width, height, that.words, dialogType, tailType, fill, size, font, color, backgroundColor, borderColor, borderWidth, align, valign, corner, shadowColor, shadowBlur, padding, paddingH, paddingV, shiftH, shiftV, slantLeft, slantRight, slantTop, slantBottom, tailH, tailV, tailShiftH, tailShiftV, tailShiftAngle, arrows, arrowsInside, arrowsFlip, index, selectedIndex));
     };
-    this.dispose = function(a,b,disposing) {
+    this.dispose = function(a, b, disposing) {
         if (that.arrowNEvent) {
-            that.arrowNext.off("mousedown", that.arrowNEvent);      
-            that.arrowPrev.off("mousedown", that.arrowPEvent);  
+            that.arrowNext.off("mousedown", that.arrowNEvent);
+            that.arrowPrev.off("mousedown", that.arrowPEvent);
         }
-        if (!disposing) this.zimContainer_dispose(true); 
-    }        
-}    
-zim.extend(zim.Dialog, zim.Container, ["clone","dispose"], "zimContainer", false);
+        if (!disposing) this.zimContainer_dispose(true);
+    };
+};
+zim.extend(zim.Dialog, zim.Container, ["clone", "dispose"], "zimContainer", false);
 
 
 if (!WW.zns) {
