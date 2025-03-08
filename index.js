@@ -1259,7 +1259,7 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
             piecesArray.push(piece);
         });
         piecesArray.sort(function(a, b) {return a.y - b.y;});
-        loop(piecesArray, function(piece) {
+        zim.loop(piecesArray, function(piece) {
             piece.addTo(that.pieces);
         });
         return that;
