@@ -30,7 +30,7 @@
         "zimjs": "^17.3.3"
     },
     "peerDependencies": {
-        "zimjs": "^16.1.9"
+        "zimjs": "^17.3.3"
     },
     "bugs": {
         "url": "https://forum.zimjs.com"
