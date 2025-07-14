@@ -1880,7 +1880,7 @@ zim.extend(zim.Scorer, zim.Label);
 
 zim.Dialog = function(width, height, words, dialogType, tailType, fill, size, font, color, backgroundColor, borderColor, borderWidth, align, valign, corner, shadowColor, shadowBlur, padding, paddingH, paddingV, shiftH, shiftV, slantLeft, slantRight, slantTop, slantBottom, tailH, tailV, tailShiftH, tailShiftV, tailShiftAngle, arrows, arrowsInside, arrowsFlip, index, selectedIndex) {
     var sig = "width, height, words, dialogType, tailType, fill, size, font, color, backgroundColor, borderColor, borderWidth, align, valign, corner, shadowColor, shadowBlur, padding, paddingH, paddingV, shiftH, shiftV, slantLeft, slantRight, slantTop, slantBottom, tailH, tailV, tailShiftH, tailShiftV, tailShiftAngle, arrows, arrowsInside, arrowsFlip, index, selectedIndex";
-    var duo; if (duo = zob(Dialog, arguments, sig, this)) return duo;
+    var duo; if (duo = zob(zim.Dialog, arguments, sig, this)) return duo;
 
     if (zot(width)) width = 300;
     if (zot(height)) height = 200;
