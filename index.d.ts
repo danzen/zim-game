@@ -70,8 +70,8 @@ declare namespace zim {
     }    
 
     export class Board extends Container {
-        constructor(config_or_size?:number, cols?:number, rows?:number, backgroundColor?:string, rollBackgroundColor?:string, borderColor?:string, borderWidth?:number, icon?:DisplayObject, isometric?:boolean, indicatorColor?:string, indicatorBorderColor?:string, indicatorBorderWidth?:number, indicatorSize?:number, indicatorType?:string, arrows?:boolean, arrowColor?:string, arrowRollColor?:string, swipe?:boolean, info?:number, labels?:boolean, color?:string, scaleMin?:number, scaleMax?:number, buffer?:number)
-        constructor(config:{size?:number, cols?:number, rows?:number, backgroundColor?:string, rollBackgroundColor?:string, borderColor?:string, borderWidth?:number, icon?:DisplayObject, isometric?:boolean, indicatorColor?:string, indicatorBorderColor?:string, indicatorBorderWidth?:number, indicatorSize?:number, indicatorType?:string, arrows?:boolean, arrowColor?:string, arrowRollColor?:string, swipe?:boolean, info?:number, labels?:boolean, color?:string, scaleMin?:number, scaleMax?:number, buffer?:number})
+        constructor(config_or_size?:number, cols?:number, rows?:number, backgroundColor?:string, rollBackgroundColor?:string, borderColor?:string, borderWidth?:number, icon?:DisplayObject, isometric?:boolean, indicatorColor?:string, indicatorBorderColor?:string, indicatorBorderWidth?:number, indicatorSize?:number, indicatorType?:string, arrows?:boolean, arrowColor?:string, arrowRollColor?:string, swipe?:boolean, info?:number, labels?:boolean, color?:string, scaleMin?:number, scaleMax?:number, buffer?:number, isometricRatio?: number)
+        constructor(config:{size?:number, cols?:number, rows?:number, backgroundColor?:string, rollBackgroundColor?:string, borderColor?:string, borderWidth?:number, icon?:DisplayObject, isometric?:boolean, indicatorColor?:string, indicatorBorderColor?:string, indicatorBorderWidth?:number, indicatorSize?:number, indicatorType?:string, arrows?:boolean, arrowColor?:string, arrowRollColor?:string, swipe?:boolean, info?:number, labels?:boolean, color?:string, scaleMin?:number, scaleMax?:number, buffer?:number, isometricRatio?: number})
         positionBoard(i:number, j:number):this
         moveCamera(dir:string):this
         addCol(index?:number):this
@@ -112,6 +112,8 @@ declare namespace zim {
         shiftPath(lastStartX?:number, startX?:number, lastStartY?:number, startY?:number, obj?:DisplayObject):this
         addKeys(obj?:DisplayObject, type?:string, filter?:filter):this
         removeKeys(type):this
+        getAngleLeft():number
+        getAngleRight():number
         readonly tiles:Tile
         readonly pieces:Container
         readonly num:number
@@ -165,8 +167,8 @@ declare namespace zim {
     }
 
     export class Timer extends Label {
-        constructor(config_or_time?:number, step?:number, colon?:boolean, down?:boolean, isometric?:string, startPaused?:boolean, size?:number, font?:string, color?:string, backgroundColor?:string, borderColor?:string, borderWidth?:number, align?:string, valign?:string, bold?:boolean, italic?:boolean, variant?:boolean, width?:number, height?:number, decimals?:number)
-        constructor(config:{time?:number, step?:number, colon?:boolean, down?:boolean, isometric?:string, startPaused?:boolean, size?:number, font?:string, color?:string, backgroundColor?:string, borderColor?:string, borderWidth?:number, align?:string, valign?:string, bold?:boolean, italic?:boolean, variant?:boolean, width?:number, height?:number, decimals?:number})
+        constructor(config_or_time?:number, step?:number, colon?:boolean, down?:boolean, isometric?:string, startPaused?:boolean, size?:number, font?:string, color?:string, backgroundColor?:string, borderColor?:string, borderWidth?:number, align?:string, valign?:string, bold?:boolean, italic?:boolean, variant?:boolean, width?:number, height?:number, decimals?:number, board?: Board)
+        constructor(config:{time?:number, step?:number, colon?:boolean, down?:boolean, isometric?:string, startPaused?:boolean, size?:number, font?:string, color?:string, backgroundColor?:string, borderColor?:string, borderWidth?:number, align?:string, valign?:string, bold?:boolean, italic?:boolean, variant?:boolean, width?:number, height?:number, decimals?:number, board?: Board})
         start(time?:number):this
         pause(state?:boolean):this
         stop():this
@@ -178,8 +180,8 @@ declare namespace zim {
     }
 
     export class Scorer extends Label {
-        constructor(config_or_score?:number, isometric?:string, size?:number, font?:string, color?:string, backgroundColor?:string, borderColor?:string, borderWidth?:number, align?:string, valign?:string, bold?:boolean, italic?:boolean, variant?:boolean, width?:number, height?:number)
-        constructor(config:{time?:number, isometric?:string, size?:number, font?:string, color?:string, backgroundColor?:string, borderColor?:string, borderWidth?:number, align?:string, valign?:string, bold?:boolean, italic?:boolean, variant?:boolean, width?:number, height?:number})
+        constructor(config_or_score?:number, isometric?:string, size?:number, font?:string, color?:string, backgroundColor?:string, borderColor?:string, borderWidth?:number, align?:string, valign?:string, bold?:boolean, italic?:boolean, variant?:boolean, width?:number, height?:number, board?: Board)
+        constructor(config:{time?:number, isometric?:string, size?:number, font?:string, color?:string, backgroundColor?:string, borderColor?:string, borderWidth?:number, align?:string, valign?:string, bold?:boolean, italic?:boolean, variant?:boolean, width?:number, height?:number, board?: Board})
         score:number
         isometric:string
     }   

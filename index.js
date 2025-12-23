@@ -508,8 +508,8 @@ zim.extend(zim.Meter, zim.Label);
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, borderColor, borderWidth, icon, isometric, indicatorColor, indicatorBorderColor, indicatorBorderWidth, indicatorSize, indicatorType, arrows, arrowColor, arrowRollColor, swipe, info, labels, color, scaleMin, scaleMax, buffer) {
-    var sig = "size, cols, rows, backgroundColor, rollBackgroundColor, borderColor, borderWidth, icon, isometric, indicatorColor, indicatorBorderColor, indicatorBorderWidth, indicatorSize, indicatorType, arrows, arrowColor, arrowRollColor, swipe, info, labels, color, scaleMin, scaleMax, buffer";
+zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, borderColor, borderWidth, icon, isometric, indicatorColor, indicatorBorderColor, indicatorBorderWidth, indicatorSize, indicatorType, arrows, arrowColor, arrowRollColor, swipe, info, labels, color, scaleMin, scaleMax, buffer, isometricRatio) {
+    var sig =       "size, cols, rows, backgroundColor, rollBackgroundColor, borderColor, borderWidth, icon, isometric, indicatorColor, indicatorBorderColor, indicatorBorderWidth, indicatorSize, indicatorType, arrows, arrowColor, arrowRollColor, swipe, info, labels, color, scaleMin, scaleMax, buffer, isometricRatio";
     var duo; if (duo = zob(zim.Board, arguments, sig, this)) return duo;
     this.arguments = arguments;
 
@@ -536,6 +536,7 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
     if (zot(arrowColor)) arrowColor = "rgba(0,0,0,.4)";
     if (zot(arrowRollColor)) arrowRollColor = "#fff";
     if (zot(swipe)) swipe = arrows;
+    if (zot(isometricRatio)) isometricRatio = 2;
 
     var timeType = typeof TIME == "undefined" ? "seconds" : TIME;
 
@@ -592,7 +593,7 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
     this.buffer = buffer;
 
     var that = this;
-    var holder = new zim.Container().addTo(this);
+    var holder = this.holder = new zim.Container().addTo(this);
     var container = new zim.Container(size, size);
     new zim.Rectangle(size, size, zik(backgroundColor), zik(borderColor), zik(borderWidth)).addTo(container);
     // labels for debugging
@@ -602,7 +603,7 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
     if (isometric) {
         tiles.rot(45)
             .centerReg(holder);
-        holder.sca(2, 1);
+        holder.sca(isometricRatio, 1);
     } else {
         tiles.centerReg(holder);
     }
@@ -613,6 +614,15 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
     var lastStartCol = 0;
     var lastStartRow = 0;
 
+    Object.defineProperty(this, 'isometricRatio', {
+        get: function() {
+            return isometricRatio;
+        },
+        set: function(value) {
+            isometricRatio = value;
+            holder.sca(isometricRatio, 1);
+        }
+    });
     Object.defineProperty(this, 'numCols', {
         get: function() {
             return that.info[0].length;
@@ -745,6 +755,14 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
             var swap = {left: "right", right: "left", up: "down", down: "up"};
             that.moveCamera(swap[e.target.direction]);
         });
+    }
+
+    this.getAngleLeft = function() {
+        return Math.atan(that.isometricRatio)*DEG-90;
+    }
+
+    this.getAngleRight = function() {
+        return 90-Math.atan(that.isometricRatio)*DEG;
     }
 
     this.moveCamera = function(dir) {
@@ -1578,8 +1596,11 @@ zim.Board = function(size, cols, rows, backgroundColor, rollBackgroundColor, bor
         that.pane.show();
         return that.textArea.text;
     };
+    this.clone = function() {
+        return that.cloneProps(new zim.Board(size, cols, rows, backgroundColor, rollBackgroundColor, borderColor, borderWidth, icon, isometric, indicatorColor, indicatorBorderColor, indicatorBorderWidth, indicatorSize, indicatorType, arrows, arrowColor, arrowRollColor, swipe, info, labels, color, scaleMin, scaleMax, buffer, isometricRatio));
+    };
 };
-zim.extend(zim.Board, zim.Container);
+zim.extend(zim.Board, zim.Container, "clone");
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1716,8 +1737,8 @@ zim.extend(zim.Tree, zim.Container);
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-zim.Timer = function(time, step, colon, down, isometric, startPaused, size, font, color, backgroundColor, borderColor, borderWidth, align, valign, bold, italic, variant, width, height, decimals) {
-    var sig = "time, step, colon, down, isometric, startPaused, size, font, color, backgroundColor, borderColor, borderWidth, align, valign, bold, italic, variant, width, height, decimals";
+zim.Timer = function(time, step, colon, down, isometric, startPaused, size, font, color, backgroundColor, borderColor, borderWidth, align, valign, bold, italic, variant, width, height, decimals, board) {
+    var sig = "time, step, colon, down, isometric, startPaused, size, font, color, backgroundColor, borderColor, borderWidth, align, valign, bold, italic, variant, width, height, decimals, board";
     var duo; if (duo = zob(zim.Timer, arguments, sig, this)) return duo;
     this.arguments = arguments;
 
@@ -1744,14 +1765,16 @@ zim.Timer = function(time, step, colon, down, isometric, startPaused, size, font
         get: function() {
             return isometric;
         },
-        set: function(value) {
+        set: function(value) {				
             isometric = value;
             if (isometric) {
                 if (isometric == true) isometric = "left";
                 if (isometric == "left") {
-                    that.ske(0, -26.5);
+                    if (board) that.ske(0, board.getAngleLeft());
+                    else that.ske(0, -26.5);
                 } else {
-                    that.ske(0, 26.5);
+                    if (board) that.ske(0, board.getAngleRight());
+                    else that.ske(0, 26.5);
                 }
             } else {
                 that.ske(0, 0);
@@ -1827,8 +1850,8 @@ zim.extend(zim.Timer, zim.Label, ["dispose"], "zimLabel", false);
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-zim.Scorer = function(score, isometric, size, font, color, backgroundColor, borderColor, borderWidth, align, valign, bold, italic, variant, width, height) {
-    var sig = "score, isometric, size, font, color, backgroundColor, borderColor, borderWidth, align, valign, bold, italic, variant, width, height";
+zim.Scorer = function(score, isometric, size, font, color, backgroundColor, borderColor, borderWidth, align, valign, bold, italic, variant, width, height, board) {
+    var sig = "score, isometric, size, font, color, backgroundColor, borderColor, borderWidth, align, valign, bold, italic, variant, width, height, board";
     var duo; if (duo = zob(zim.Scorer, arguments, sig, this)) return duo;
     this.arguments = arguments;
 
@@ -1856,9 +1879,11 @@ zim.Scorer = function(score, isometric, size, font, color, backgroundColor, bord
             if (isometric == true) isometric = "right";
             if (isometric) {
                 if (isometric == "left") {
-                    that.ske(0, -26.5);
+                    if (board) that.ske(0, board.getAngleLeft());
+                    else that.ske(0, -26.5);
                 } else {
-                    that.ske(0, 26.5);
+                    if (board) that.ske(0, board.getAngleRight());
+                    else that.ske(0, 26.5);
                 }
             } else {
                 that.ske(0, 0);
