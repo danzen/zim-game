@@ -1,6 +1,6 @@
 {
     "name": "@zimjs/game",
-    "version": "2.9.0",
+    "version": "2.9.1",
     "description": "Game module for ZIM JavaScript Canvas Framework",
     "main": "index.js",
     "types": "index.d.ts",
@@ -27,10 +27,10 @@
     "license": "MIT",
     "devDependencies": {
         "typescript": "^5.3.3",
-        "zimjs": "^19.0.0"
+        "zimjs": "^20.0.0"
     },
     "peerDependencies": {
-        "zimjs": "^19.0.0"
+        "zimjs": "^20.0.0"
     },
     "bugs": {
         "url": "https://forum.zimjs.com"

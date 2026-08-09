@@ -1,10 +1,10 @@
 
-import {Container, Circle, Rectangle, Label, Stage, DisplayObject, Point, Tile, Shape, Arrow} from "zimjs"
+import {Container, Circle, Rectangle, Label, Stage, color, DisplayObject, Point, Tile, Shape, Arrow} from "zimjs"
 
 declare namespace zim {
 
     export class LeaderBoard extends Container {
-        constructor(config_or_data?:string|[{player:string, score:number}], title?:string, width?:number, height?:number, corner?:number, backgroundColor?:string, titleColor?:string, colors?:{
+        constructor(config_or_data?:string|{player:string, score:number}[], title?:string, width?:number, height?:number, corner?:number, backgroundColor?:string, titleColor?:string, colors?:{
             rankColor?:string,
             rankBackgroundColor?:string,
             currentRankColor?:string,
@@ -17,7 +17,7 @@ declare namespace zim {
             scoreBackgroundColor?:string,
             currentScoreColor?:string,
             currentScoreBackgroundColor?:string}, total?:number, scoreWidth?:number, scorePlaces?:number, scoreZeros?:boolean, spacing?:number, arrows?:boolean, borderColor?:string, borderWidth?:number, shadowColor?:string, shadowBlur?:number, reverse?:boolean, allowZero?:boolean, font?:string, fontSize?:number, nameShift?:number, scoreShift?:number, rankShift?:number)
-        constructor(config:{data?:string|[{player:string, score:number}], title?:string, width?:number, height?:number, corner?:number, backgroundColor?:string, titleColor?:string, colors?:{
+        constructor(config:{data?:string|{player:string, score:number}[], title?:string, width?:number, height?:number, corner?:number, backgroundColor?:string, titleColor?:string, colors?:{
             rankColor?:string,
             rankBackgroundColor?:string,
             currentRankColor?:string,
@@ -35,15 +35,14 @@ declare namespace zim {
         cancel():this
         startTime():this
         stopTime():this
-        redraw(newData:[{player:string, score:number}], newWinner?:number):this
+        redraw(newData:{player:string, score:number}[], newWinner?:number):this
         readonly winner:number
-        readonly place:number
         readonly backing:Rectangle
         readonly backdrop:Rectangle
         readonly filled:boolean
         readonly grid:Container
         readonly titleText:Label
-        readonly dataSource:string|[{player:string, score:number}]
+        readonly dataSource:string|{player:string, score:number}[]
         readonly key:string
 
     }
@@ -79,16 +78,16 @@ declare namespace zim {
         update():this
         getTile(col?:number, row?:number):Container
         getRandomTile(filter?:filter):Container
-        getIndexes(tile:Container):[number]
+        getIndexes(tile:Container):number[]
         getPoint(a?:number,b?:number):Point
         getGlobalPoint(a?:number,b?:number):Point
-        getInfo(a?:number,b?:number):{data?:any, color?:string, items?:[]}
+        getInfo(a?:number,b?:number):{data?:any, color?:string, items?:any[]}
         getData(a?:number,b?:number):any
         getColor(a?:number,b?:number):string
         getIcon(a?:number,b?:number):DisplayObject
-        getItems(a?:number,b?:number):[]
-        getAllItems(filter?:filter):[]
-        getTilesAround(a?:number,b?:number):[Container]
+        getItems(a?:number,b?:number):any[]
+        getAllItems(filter?:filter):any[]
+        getTilesAround(a?:number,b?:number):Container[]
         setData(tile:Container, value:any):this
         setColor(tile:Container, color:string):this
         setIcon(tile:Container, icon:DisplayObject):this
@@ -107,19 +106,19 @@ declare namespace zim {
         move(obj?:DisplayObject, col?:number, row?:number, time?:number):this        
         moveTo(obj?:DisplayObject, col?:number, row?:number, time?:number):this
         clearPath():this
-        followPath(obj:DisplayObject, path:[[x:number,y:number]|{x:number,y:number}], time?:number, animation?:number, buffer?:number):this
+        followPath(obj:DisplayObject, path:[x:number,y:number]|{x:number,y:number}[], time?:number, animation?:number, buffer?:number):this
         stopFollowPath():this
         shiftPath(lastStartX?:number, startX?:number, lastStartY?:number, startY?:number, obj?:DisplayObject):this
         addKeys(obj?:DisplayObject, type?:string, filter?:filter):this
-        removeKeys(type):this
+        removeKeys(type:string):this
         getAngleLeft():number
         getAngleRight():number
         readonly tiles:Tile
         readonly pieces:Container
         readonly num:number
         readonly size:number
-        readonly info:[]
-        readonly data:[]
+        readonly info:any[]
+        readonly data:any[]
         readonly numCols:number
         readonly numRows:number
         startCol:number
@@ -187,9 +186,9 @@ declare namespace zim {
     }   
 
     export class Dialog extends Container {
-        constructor(config_or_width?:number, height?:number, words?:string|[string], dialogType?:string, tailType?:string, fill?:boolean, size?:number, font?:string, color?:string, backgroundColor?:string, borderColor?:string, borderWidth?:number, align?:string, valign?:string, corner?:number, shadowColor?:string, shadowBlur?:number, padding?:number, paddingH?:number, paddingV?:number, shiftH?:number, shiftV?:number, slantLeft?:number, slantRight?:number, slantTop?:number, slantBottom?:number, tailH?:string, tailV?:string, tailShiftH?:number, tailShiftV?:number, tailShiftAngle?:number, arrows?:boolean, arrowsInside?:boolean, arrowsFlip?:boolean, selectedIndex?:number)
-        constructor(config: {width?:number, height?:number, words?:string|[string], dialogType?:string, tailType?:string, fill?:boolean, size?:number, font?:string, color?:string, backgroundColor?:string, borderColor?:string, borderWidth?:number, align?:string, valign?:string, corner?:number, shadowColor?:string, shadowBlur?:number, padding?:number, paddingH?:number, paddingV?:number, shiftH?:number, shiftV?:number, slantLeft?:number, slantRight?:number, slantTop?:number, slantBottom?:number, tailH?:string, tailV?:string, tailShiftH?:number, tailShiftV?:number, tailShiftAngle?:number, arrows?:boolean, arrowsInside?:boolean, arrowsFlip?:boolean, selectedIndex?:number})
-        setWords(words:string|[string], selectedIndex?:number):this
+        constructor(config_or_width?:number, height?:number, words?:string|string[], dialogType?:string, tailType?:string, fill?:boolean, size?:number, font?:string, color?:string, backgroundColor?:string, borderColor?:string, borderWidth?:number, align?:string, valign?:string, corner?:number, shadowColor?:string, shadowBlur?:number, padding?:number, paddingH?:number, paddingV?:number, shiftH?:number, shiftV?:number, slantLeft?:number, slantRight?:number, slantTop?:number, slantBottom?:number, tailH?:string, tailV?:string, tailShiftH?:number, tailShiftV?:number, tailShiftAngle?:number, arrows?:boolean, arrowsInside?:boolean, arrowsFlip?:boolean, selectedIndex?:number)
+        constructor(config: {width?:number, height?:number, words?:string|string[], dialogType?:string, tailType?:string, fill?:boolean, size?:number, font?:string, color?:string, backgroundColor?:string, borderColor?:string, borderWidth?:number, align?:string, valign?:string, corner?:number, shadowColor?:string, shadowBlur?:number, padding?:number, paddingH?:number, paddingV?:number, shiftH?:number, shiftV?:number, slantLeft?:number, slantRight?:number, slantTop?:number, slantBottom?:number, tailH?:string, tailV?:string, tailShiftH?:number, tailShiftV?:number, tailShiftAngle?:number, arrows?:boolean, arrowsInside?:boolean, arrowsFlip?:boolean, selectedIndex?:number})
+        setWords(words:string|string[], selectedIndex?:number):this
         next():this
         prev():this
         color:string
@@ -199,8 +198,8 @@ declare namespace zim {
         readonly backing:Shape
         readonly backingShadow:Container
         readonly label:Label
-        readonly labels:[Label]
-        readonly words:[]
+        readonly labels:Label[]
+        readonly words:any[]
         readonly tail:DisplayObject
         readonly arrows:Container
         readonly arrowNext:Arrow
